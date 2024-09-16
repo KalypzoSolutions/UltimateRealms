@@ -20,33 +20,32 @@ Easy Realm Creation for Minecraft Java Edition Servers.
 - [ ] Extendable Realm Metadata
     - Allows for custom metadata to be stored with the realm for use in other plugins.
     - e.g. a rating system
+- [ ] Options ( [see below](#options) )
 
-## Realm Lifecycle
+---
 
-**0 - Creation**
-- Create a new realm by template or worldedit schematic
-- Upload a world
-- Set the spawn point
-- Set the region
-- Set the realm name
-- ownership 
+## Different Modes explained
 
-**1 - Loading**
-- Prepare the realm for loading (PreLoadEvent)
-- Load the realm into the server
-- Realm is now available for players to join and explore
+### A) Single-Server
+It's possible when you have a single server, and you want to host multiple realms on it.
 
-**2 - Running**
-- Players can join the realm and interact with it
-- If empty for a certain amount of time, the realm will be unloaded -> *Idle-State* 
-- If the server is restarted, the realm will be unloaded
+### B) Decentralized Multi-Server
 
-**2 - Unloading**
-- Prepare the realm for unloading (PreUnloadEvent)
-- Unload the realm from the server
-- Realm is no longer available for players to join
+With `BungeeCord-Plugin-Messaging` or `Redis-PubSub` for cross-server communication you can create a decentralized
+multi-server network. This allows you to create a network of servers where each server is a realm-host.
+This allows for more flexibility in scaling and managing the network.
 
+### C) Forwarding
 
+Let's imagine you have a server which is not a realm server, but the player should interact with his/other realms like
+he is on the server, then you put the plugin in forwarding mode.
+The Forwarding Mode ensures that most of the API is working as expected, but no realm is not hosted on the server.
+
+## Options
+- [ ] Force Realm
+    - Ensures that on join the player will be teleported to his realm.
+- [ ] Rebalancing (Decentralized Multi-Server only)
+    - Rebalances some idle realms to another host to allow downscaling or simple load distribution.
 
 
 
