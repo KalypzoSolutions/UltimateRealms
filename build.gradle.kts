@@ -9,7 +9,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.oraxen.com/releases")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://jitpack.io")
@@ -23,13 +23,14 @@ dependencies {
     implementation("com.github.hamza-cskn.obliviate-invs:core:4.3.0")
     implementation("com.github.hamza-cskn.obliviate-invs:pagination:4.3.0")
     implementation("com.github.hamza-cskn.obliviate-invs:advancedslot:4.3.0")
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("com.hierynomus:sshj:0.38.0") // provided by spigot library loader
 
-    compileOnly("me.clip.placeholderapi:placeholderapi:2.11.5")
+    compileOnly("me.clip:placeholderapi:2.11.5")
     // TESTS
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("com.hierynomus:sshj:0.38.0")
+    testImplementation("com.google.guava:guava:33.3.0-jre")
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
 }
