@@ -1,4 +1,6 @@
 package de.kalypzo.realms;
 
-public class RealmPlugin {
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class RealmPlugin  extends JavaPlugin {
 }

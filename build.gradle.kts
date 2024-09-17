@@ -1,5 +1,7 @@
 plugins {
     id("java")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("xyz.jpenilla.run-paper") version "2.2.3"
 }
 
 group = "de.kalypzo"
@@ -7,14 +9,29 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://repo.oraxen.com/releases")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://jitpack.io")
+    maven("https://repo.akani.dev/releases")
 }
 
 dependencies {
-    compileOnly("com.hierynomus:sshj:0.38.0")
+    implementation("org.incendo:cloud-paper:2.0.0-beta.9")
+    implementation("org.incendo:cloud-minecraft-extras:2.0.0-beta.9")
+    implementation("org.incendo:cloud-annotations:2.0.0-rc.1")
+    implementation("com.github.hamza-cskn.obliviate-invs:core:4.3.0")
+    implementation("com.github.hamza-cskn.obliviate-invs:pagination:4.3.0")
+    implementation("com.github.hamza-cskn.obliviate-invs:advancedslot:4.3.0")
+    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("com.hierynomus:sshj:0.38.0") // provided by spigot library loader
+
+    compileOnly("me.clip.placeholderapi:placeholderapi:2.11.5")
     // TESTS
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("com.hierynomus:sshj:0.38.0")
     testImplementation("org.junit.jupiter:junit-jupiter")
+
 }
 
 tasks.test {

@@ -1,0 +1,7 @@
+main: de.kalypzo.realms.RealmPlugin
+authors: [EinJojo]
+website: https://einjojo.it/ultimate-realms
+description: UltimateRealms is a powerful plugin for realm-servers.
+version: ${version}
+name: UltimateRealms
+api-version: 1.13

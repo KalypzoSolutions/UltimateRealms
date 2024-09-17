@@ -12,14 +12,5 @@ public class SSHRealmWorldFileStorage implements RealmWorldFileStorage {
         this.sshClientProvider = sshClientProvider;
     }
 
-    @Override
-    public WorldHandle loadWorld(String remoteFileName) {
-        SCPFileTransfer fileTransfer = sshClientProvider.getSSHClient().newSCPFileTransfer();
-        fileTransfer.upload();
-    }
 
-    @Override
-    public void saveWorld(String fileName, WorldHandle worldHandle) {
-
-    }
 }
