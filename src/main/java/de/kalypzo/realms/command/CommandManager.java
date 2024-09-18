@@ -16,12 +16,20 @@ public class CommandManager {
 
     public CommandManager(RealmPlugin plugin) {
         this.plugin = plugin;
-        commandManager = LegacyPaperCommandManager.createNative(plugin, ExecutionCoordinator.asyncCoordinator());
+        commandManager = LegacyPaperCommandManager.createNative(plugin,
+                ExecutionCoordinator.coordinatorFor(ExecutionCoordinator.nonSchedulingExecutor()));
         if (commandManager.hasCapability(CloudBukkitCapabilities.BRIGADIER)) {
             commandManager.registerBrigadier();
+            getLogger().info("Brigadier support enabled.");
         } else {
             getLogger().warn("Brigadier is not supported on this server version.");
         }
+
+        if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+            commandManager.registerAsynchronousCompletions();
+            getLogger().info("Asynchronous completions enabled.");
+        }
+        commandManager.captionRegistry().registerProvider(new RealmCaptionProvider());
         registerParser();
         registerExceptionController();
         registerCommands();
@@ -48,4 +56,7 @@ public class CommandManager {
         return plugin.getSLF4JLogger();
     }
 
+    public LegacyPaperCommandManager<CommandSender> getCommandManager() {
+        return commandManager;
+    }
 }

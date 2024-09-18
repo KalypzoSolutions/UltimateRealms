@@ -1,24 +1,18 @@
 package de.kalypzo.realms.loader;
 
 import de.kalypzo.realms.realm.ActiveRealmWorld;
-
-import java.util.function.Consumer;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 
 /**
- * Represents a loading process of a realm-world.
+ * <p>A Realm process describes an operation that can be observed</p>
+ * <p>The implementation might inherit {@link Cancellable}</p>
  */
 public interface RealmProcess {
+    void subscribe(Observer observer);
 
-    /**
-     * Post completion action.
-     */
-    void setOnComplete(Consumer<ActiveRealmWorld> realmWorldConsumer);
-
-    /**
-     * Cancels the loading process.
-     */
-    void cancel();
+    void unsubscribe(Observer observer);
 
     /**
      * @return Whether the loading process is completed.
@@ -26,18 +20,26 @@ public interface RealmProcess {
     boolean isCompleted();
 
     /**
-     * @return Progress of the loading process.
+     * @return Progress of the loading process as a float between 0 and 1.
      */
+    @Range(from = 0, to = 1)
     float getProgress();
 
-    public enum LoadingState {
-        WAITING_LOAD,
-        WAITING_UNLOAD,
-        LOADING,
-        UNLOADING,
-        COMPLETED,
-        CREATING,
-        DELETING,
+
+    /**
+     * The observer should only exist for the duration of the loading process.
+     */
+    interface Observer {
+
+        /**
+         * @return The process associated with this observer.
+         */
+        @Nullable RealmProcess getProcess();
+
+        void onProgressChange();
+
+        void onComplete();
     }
+
 
 }
