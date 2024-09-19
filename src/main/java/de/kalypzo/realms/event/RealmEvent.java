@@ -2,6 +2,7 @@ package de.kalypzo.realms.event;
 
 
 import de.kalypzo.realms.realm.RealmWorld;
+import lombok.Getter;
 import org.bukkit.event.Event;
 
 /**
@@ -9,6 +10,10 @@ import org.bukkit.event.Event;
  */
 public abstract class RealmEvent extends Event {
 
+    /**
+     * @return The realm world related to this event
+     */
+    @Getter
     private final RealmWorld realmWorld;
 
     public RealmEvent(RealmWorld realmWorld) {
@@ -18,10 +23,9 @@ public abstract class RealmEvent extends Event {
     public RealmEvent(RealmWorld realmWorld, boolean async) {
         super(async);
         this.realmWorld = realmWorld;
+
+
     }
 
-    public RealmWorld getRealmWorld() {
-        return realmWorld;
-    }
 
 }
