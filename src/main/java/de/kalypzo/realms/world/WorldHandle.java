@@ -4,43 +4,35 @@ import de.kalypzo.realms.loader.WorldLoader;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
 /**
  * Represents a world handle so different world formats can be supported in the future.
  * When the world is being unloaded the handle loses its reference to the world.
+ * <p>Can be obtained by a {@link WorldLoader}</p>
  */
 public interface WorldHandle {
 
     String getWorldName();
 
-    LinkedList<WorldObserver> getObservers();
-
 
     /**
      * @param observer the observer to subscribe
      */
-    default void subscribe(WorldObserver observer) {
-        getObservers().add(observer);
-    }
+    void subscribe(WorldObserver observer);
 
     /**
      * @param observer the observer to unsubscribe
      */
-    default void unsubscribe(WorldObserver observer) {
-        getObservers().remove(observer);
-    }
+    void unsubscribe(WorldObserver observer);
 
     /**
      * Notifies all observers.
      *
      * @param consumer the consumer to notify
      */
-    default void notifyObservers(Consumer<WorldObserver> consumer) {
-        getObservers().forEach(consumer);
-    }
+    void notifyObservers(Consumer<WorldObserver> consumer);
 
     /**
      * Saves the world.

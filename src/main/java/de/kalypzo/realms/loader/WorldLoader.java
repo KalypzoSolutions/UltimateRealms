@@ -1,6 +1,7 @@
 package de.kalypzo.realms.loader;
 
 import de.kalypzo.realms.world.WorldHandle;
+import de.kalypzo.realms.world.WorldObserverFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,4 +20,21 @@ public interface WorldLoader {
      * @return true if the world was unloaded successfully, false otherwise.
      */
     boolean unloadWorld(@NotNull WorldHandle worldHandle);
+
+    /**
+     * Adds a factory for creating world observers.
+     * <p>
+     * All {@link WorldHandle} instances that will be created by this loader will be automatically subscribed.
+     *
+     * @param factory the factory to add.
+     */
+    void addWorldObserverFactory(WorldObserverFactory factory);
+
+    /**
+     * Removes a factory for creating world observers.
+     *
+     * @param factory the factory to remove.
+     */
+    void removeWorldObserverFactory(WorldObserverFactory factory);
+
 }

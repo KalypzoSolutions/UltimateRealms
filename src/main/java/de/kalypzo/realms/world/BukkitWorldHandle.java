@@ -1,7 +1,9 @@
 package de.kalypzo.realms.world;
 
-import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import de.kalypzo.realms.loader.BukkitWorldLoader;
+import lombok.Getter;
+import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -10,32 +12,54 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
+/**
+ * @see BukkitWorldLoader
+ */
 public class BukkitWorldHandle implements WorldHandle {
+    private final LinkedList<WorldObserver> observers = new LinkedList<>();
     private final String worldName;
     private final WeakReference<World> bukkitWorldReference;
-    private final LinkedList<WorldObserver> observers;
     private final BukkitWorldLoader worldLoader;
+    /**
+     * -- GETTER --
+     *
+     * @return true if the world was unloaded by the loader.
+     */
+    @Getter
     private boolean unloadedByLoader = false;
 
-    public BukkitWorldHandle(@NotNull World world, @NotNull LinkedList<WorldObserver> observers, @NotNull BukkitWorldLoader worldLoader) {
-        Preconditions.checkNotNull(world, "world can not be null");
-        Preconditions.checkNotNull(observers, "observers can not be null");
-        Preconditions.checkNotNull(worldLoader, "worldLoader can not be null");
+    public BukkitWorldHandle(@NotNull @NonNull World world, @NotNull @NonNull BukkitWorldLoader worldLoader) {
         this.bukkitWorldReference = new WeakReference<>(world);
         this.worldName = world.getName();
-        this.observers = observers;
         this.worldLoader = worldLoader;
     }
 
+    public List<WorldObserver> getObservers() {
+        return ImmutableList.copyOf(observers);
+    }
+
     @Override
-    public LinkedList<WorldObserver> getObservers() {
-        return observers;
+    public void subscribe(WorldObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void unsubscribe(WorldObserver observer) {
+        observer.onObserverUnsubscribed();
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(Consumer<WorldObserver> consumer) {
+        observers.forEach(consumer);
     }
 
     @Override
     public boolean save() {
         getBukkitWorldOrElseThrow().save();
+        notifyObservers(WorldObserver::onWorldSave);
         return true;
     }
 
@@ -56,13 +80,6 @@ public class BukkitWorldHandle implements WorldHandle {
     @Override
     public @NotNull String getWorldName() {
         return worldName;
-    }
-
-    /**
-     * @return true if the world was unloaded by the loader, false otherwise.
-     */
-    public boolean isUnloadedByLoader() {
-        return unloadedByLoader;
     }
 
     @Override
@@ -97,9 +114,6 @@ public class BukkitWorldHandle implements WorldHandle {
 
     @Override
     public String toString() {
-        return "BukkitWorldHandle{" +
-                "worldName='" + worldName + '\'' +
-                ", unloadedByLoader=" + unloadedByLoader +
-                '}';
+        return "BukkitWorldHandle{" + "worldName='" + worldName + '\'' + ", unloadedByLoader=" + unloadedByLoader + '}';
     }
 }
