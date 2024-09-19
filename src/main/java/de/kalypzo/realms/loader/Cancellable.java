@@ -1,5 +1,8 @@
 package de.kalypzo.realms.loader;
 
+/**
+ * Represents an operation that can be cancelled.
+ */
 public interface Cancellable {
 
     /**
