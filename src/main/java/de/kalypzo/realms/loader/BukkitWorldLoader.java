@@ -71,6 +71,10 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
         return worldHandle;
     }
 
+    public FallbackWorld getFallbackWorld() {
+        return FallbackWorld.getInstance();
+    }
+
 
     /**
      * @param unknownHandle a handle to the world to unload.
@@ -88,7 +92,7 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
         getUnloadingBlacklist().remove(worldHandle.getWorldName());
         loadedWorlds.remove(worldHandle);
         // kick all players from the world
-        Location fallbackLocation = FallbackWorld.getInstance().getWorldHandle().getSpawnLocation();
+        Location fallbackLocation = getFallbackWorld().getWorldHandle().getSpawnLocation();
         for (Player player : bukkitWorld.getPlayers()) {
             player.teleport(fallbackLocation);
         }

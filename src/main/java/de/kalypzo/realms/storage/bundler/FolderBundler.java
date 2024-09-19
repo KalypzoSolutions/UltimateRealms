@@ -15,7 +15,7 @@ public interface FolderBundler {
      * Bundles the contents of a specified folder into a single file.
      *
      * @param folder               the folder to bundle
-     * @param outputFileNamePrefix the prefix for the output file name without extension
+     * @param outputFileNamePrefix the file name for the output without extension
      * @return the path to the bundled file
      */
     Path bundleFolder(@NotNull Path folder, String outputFileNamePrefix) throws BundleException;
@@ -27,5 +27,7 @@ public interface FolderBundler {
      * @return the path to the extracted folder
      */
     Path extractBundle(@NotNull Path file) throws BundleException;
+
+    String getFileNameExtension();
 
 }

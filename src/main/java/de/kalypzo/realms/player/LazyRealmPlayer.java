@@ -8,23 +8,18 @@ import java.util.UUID;
 /**
  * Represents a player that is not loaded into memory.
  */
-public class LazyRealmPlayer implements RealmPlayer {
-
-    private final UUID uuid;
+public class LazyRealmPlayer extends CachedRealmPlayer {
     private final RealmPlayerManager playerManager;
 
     public LazyRealmPlayer(UUID uuid, RealmPlayerManager playerManager) {
-        this.uuid = uuid;
+        super(uuid);
         this.playerManager = playerManager;
     }
 
-    @Override
-    public UUID getUuid() {
-        return uuid;
-    }
 
     @Override
     public List<RealmWorld> getOwningRealms() {
-        return List.of();
+        return null;
     }
+
 }

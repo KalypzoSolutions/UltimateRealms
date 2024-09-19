@@ -1,0 +1,107 @@
+package de.kalypzo.realms.storage.bundler;
+
+import de.kalypzo.realms.config.WorldFileStorageConfiguration;
+import de.kalypzo.realms.storage.ssh.SSHRealmWorldFileStorage;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.sftp.FileAttributes;
+import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.transport.verification.HostKeyVerifier;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.security.PublicKey;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@EnabledIfEnvironmentVariable(named = "SSH_TESTS", matches = "true", disabledReason = "SSH tests are disabled")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class SSHRealmWorldFileStorageTest {
+
+    @TempDir
+    Path tempDir;
+
+    private SSHClient sshClient;
+    private WorldFileStorageConfiguration config;
+    private SSHRealmWorldFileStorage storage;
+
+    private static final String TEST_HOST = "127.0.0.1";
+    private static final int TEST_PORT = 22;
+    private static final String TEST_USER = "junit";
+    private static final String TEST_PASSWORD = "junit";
+
+    @BeforeEach
+    void setUp() throws IOException {
+        sshClient = createSSHClient();
+        config = createTestConfig();
+        storage = new SSHRealmWorldFileStorage(sshClient, config, new ZipBundler(tempDir));
+    }
+
+    @AfterEach
+    void tearDown() throws IOException {
+        sshClient.disconnect();
+    }
+
+    @Test
+    @Order(1)
+    void testSaveFile() throws Exception {
+        Path ideaFolder = Path.of("./.idea/");
+        storage.saveFile(ideaFolder);
+
+        try (SFTPClient sftpClient = sshClient.newSFTPClient()) {
+            FileAttributes attributes = sftpClient.statExistence(config.getRemoteFolder() + ".idea.zip");
+            assertNotNull(attributes, "Saved file should exist on remote server");
+        }
+    }
+
+    @Test
+    @Order(2)
+    void testLoadFile() throws Exception {
+        Path loaded = storage.loadFile(".idea", tempDir);
+        assertNotNull(loaded, "Loaded file should not be null");
+    }
+
+    private SSHClient createSSHClient() throws IOException {
+        SSHClient client = new SSHClient();
+        client.addHostKeyVerifier(createPermissiveHostKeyVerifier());
+        client.connect(TEST_HOST, TEST_PORT);
+        client.authPassword(TEST_USER, TEST_PASSWORD);
+        return client;
+    }
+
+    private HostKeyVerifier createPermissiveHostKeyVerifier() {
+        return new HostKeyVerifier() {
+            @Override
+            public boolean verify(String hostname, int port, PublicKey key) {
+                return true; // Note: This is not secure and should only be used for testing
+            }
+
+            @Override
+            public List<String> findExistingAlgorithms(String hostname, int port) {
+                return List.of();
+            }
+        };
+    }
+
+    private WorldFileStorageConfiguration createTestConfig() {
+        return new WorldFileStorageConfiguration() {
+            @Override
+            public StorageType getStorageType() {
+                return StorageType.SSH;
+            }
+
+            @Override
+            public String getLocalPath() {
+                return ".";
+            }
+
+            @Override
+            public String getRemoteFolder() {
+                return "./remote/folder/";
+            }
+        };
+    }
+}

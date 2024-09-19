@@ -5,7 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -38,7 +40,8 @@ public class ZipBundler implements FolderBundler {
                             throw new UncheckedIOException(e);
                         }
                     });
-            return tempDir.resolve(outputFileName + ".zip");
+            stream.close();
+            return tempDir.resolve(outputFileName + getFileNameExtension());
         } catch (Exception exception) {
             var ex = new BundleException(BundleException.Action.BUNDLING, folder);
             ex.initCause(exception);
@@ -71,5 +74,10 @@ public class ZipBundler implements FolderBundler {
             ex.initCause(exception);
             throw ex;
         }
+    }
+
+    @Override
+    public String getFileNameExtension() {
+        return ".zip";
     }
 }

@@ -24,8 +24,9 @@ public class RealmLoaderImpl implements RealmLoader {
      * Create RealmProcess
      * Get Realm from Storage
      * Load the world with WorldLoader
+     *
      * @param realmId the id of the realm
-     * @return
+     * @return the realm process
      */
     @Override
     public RealmProcess loadRealm(UUID realmId) {

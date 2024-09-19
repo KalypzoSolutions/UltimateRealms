@@ -4,11 +4,12 @@ public interface WorldFileStorageConfiguration {
 
     StorageType getStorageType();
 
-    SSHStorageConfiguration getSSHStorageConfiguration();
+    String getLocalPath();
 
-    interface SSHStorageConfiguration {
-
-    }
+    /**
+     * @return the remote folder where the world files are stored
+     */
+    String getRemoteFolder();
 
     enum StorageType {
         LOCAL,
