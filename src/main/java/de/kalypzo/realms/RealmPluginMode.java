@@ -3,7 +3,7 @@ package de.kalypzo.realms;
 /**
  * The RealmMode enum is used to determine the mode of the realm server.
  */
-public enum RealmMode {
+public enum RealmPluginMode {
     /**
      * Single server mode is used when only one server is running and no synchronization is needed.
      */
