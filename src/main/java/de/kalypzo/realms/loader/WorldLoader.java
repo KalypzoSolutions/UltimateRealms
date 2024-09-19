@@ -1,8 +1,8 @@
 package de.kalypzo.realms.loader;
 
-import de.kalypzo.realms.realm.world.WorldHandle;
-
-import java.nio.file.Path;
+import de.kalypzo.realms.world.WorldHandle;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Can load a file into a world
@@ -10,8 +10,13 @@ import java.nio.file.Path;
 public interface WorldLoader {
     /**
      * @param fileName the name of the world folder to load.
-     * @return the loaded world handle
+     * @return the loaded world handle or null if the world could not be loaded.
      */
-    WorldHandle loadWorld(String fileName);
-    void unloadWorld(WorldHandle worldHandle);
+    @Nullable WorldHandle loadWorld(@NotNull String fileName);
+
+    /**
+     * @param worldHandle a handle to the world to unload.
+     * @return true if the world was unloaded successfully, false otherwise.
+     */
+    boolean unloadWorld(@NotNull WorldHandle worldHandle);
 }

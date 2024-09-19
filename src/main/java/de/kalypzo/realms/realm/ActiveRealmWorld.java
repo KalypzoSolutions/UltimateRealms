@@ -2,7 +2,7 @@ package de.kalypzo.realms.realm;
 
 
 import de.kalypzo.realms.player.RealmPlayer;
-import de.kalypzo.realms.realm.world.WorldHandle;
+import de.kalypzo.realms.world.WorldHandle;
 
 import java.util.List;
 
@@ -10,8 +10,12 @@ import java.util.List;
  * Represents an active realm-world, and it provides a handle to interact with the world.
  * A Realm world becomes active when it is loaded on the current host.
  */
-public interface ActiveRealmWorld extends RealmWorld, WorldHandle {
+public interface ActiveRealmWorld extends RealmWorld {
 
+    /**
+     * @return the handle to interact with the world.
+     */
+    WorldHandle getWorldHandle();
 
     /**
      * Returns whether the realm-world is currently idle.

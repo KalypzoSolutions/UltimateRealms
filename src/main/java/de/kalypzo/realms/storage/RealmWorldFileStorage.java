@@ -1,7 +1,7 @@
 package de.kalypzo.realms.storage;
 
 import de.kalypzo.realms.loader.WorldLoader;
-import de.kalypzo.realms.realm.world.WorldHandle;
+import de.kalypzo.realms.world.WorldHandle;
 
 /**
  * Represents a storage for realm-worlds

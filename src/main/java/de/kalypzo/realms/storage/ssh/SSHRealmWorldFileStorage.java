@@ -2,7 +2,7 @@ package de.kalypzo.realms.storage.ssh;
 
 import de.kalypzo.realms.config.WorldFileStorageConfiguration;
 import de.kalypzo.realms.loader.WorldLoader;
-import de.kalypzo.realms.realm.world.WorldHandle;
+import de.kalypzo.realms.world.WorldHandle;
 import de.kalypzo.realms.storage.RealmWorldFileStorage;
 import de.kalypzo.realms.storage.bundler.FolderBundler;
 import net.schmizz.sshj.SSHClient;
