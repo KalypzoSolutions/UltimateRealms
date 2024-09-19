@@ -3,6 +3,7 @@ package de.kalypzo.realms.loader;
 import de.kalypzo.realms.world.BukkitWorldHandle;
 import de.kalypzo.realms.world.FallbackWorld;
 import de.kalypzo.realms.world.WorldHandle;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -14,10 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Creates a world handle from a world file and prevents the world from being unloaded without "permission".
@@ -26,10 +24,21 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BukkitWorldLoader.class);
     private final List<WorldHandle> loadedWorlds = new ArrayList<>();
-    private final Set<String> unloadingWhitelist = new HashSet<>();
+    private final Set<String> unloadingBlacklist = new HashSet<>();
+    private final Queue<World> unloadingQueue = new LinkedList<>();
 
     public BukkitWorldLoader(JavaPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
+    public void processUnloadingQueue() {
+        while (!unloadingQueue.isEmpty()) {
+            World world = unloadingQueue.poll();
+            if (isUnloadingBukkitFailing(world)) {
+                unloadingQueue.add(world);
+                break;
+            }
+        }
     }
 
     /**
@@ -50,30 +59,36 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
             throw new IllegalArgumentException("WorldHandle (" + unknownHandle + ") is not an instance of BukkitWorldHandle");
         }
         getLogger().info("Unloading world: {}", worldHandle.getWorldName());
-        getUnloadingWhitelist().add(worldHandle.getWorldName());
         World bukkitWorld = worldHandle.getBukkitWorldOrElseThrow();
+        getUnloadingBlacklist().remove(worldHandle.getWorldName());
+        loadedWorlds.remove(worldHandle);
+        // kick all players from the world
         Location fallbackLocation = FallbackWorld.getInstance().getWorldHandle().getSpawnLocation();
         for (Player player : bukkitWorld.getPlayers()) {
             player.teleport(fallbackLocation);
         }
-        getUnloadingWhitelist().remove(worldHandle.getWorldName());
+        getLogger().debug("Kicked all players from world: {}", worldHandle.getWorldName());
         worldHandle.getBukkitWorldReference().clear();
         worldHandle.getObservers().clear();
+        if (isUnloadingBukkitFailing(bukkitWorld)) { // if the world can not be unloaded right now, try again later
+            unloadingQueue.add(bukkitWorld);
+        }
+        return true;
+    }
 
-        return false;
+    private boolean isUnloadingBukkitFailing(World bukkitWorld) {
+        if (Bukkit.isTickingWorlds()) {
+            return true;
+        };
+        return !Bukkit.unloadWorld(bukkitWorld, true);
     }
 
     @EventHandler
     public void preventUnloadingIfNotDoneByLoader(WorldUnloadEvent event) {
         String worldName = event.getWorld().getName();
-        for (WorldHandle loadedWorld : getLoadedWorlds()) {
-            if (loadedWorld.getWorldName().equals(worldName)) {
-                if (!getUnloadingWhitelist().contains(worldName)) {
-                    event.setCancelled(true);
-                    getLogger().warn("World {} is not allowed to be unloaded by BukkitWorldLoader.", worldName);
-                }
-                return;
-            }
+        if (getUnloadingBlacklist().contains(worldName)) {
+            event.setCancelled(true);
+            getLogger().warn("World {} is not allowed to be unloaded by BukkitWorldLoader.", worldName);
         }
     }
 
@@ -88,7 +103,7 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
     /**
      * @return set of world names that are allowed to be unloaded.
      */
-    public Set<String> getUnloadingWhitelist() {
-        return unloadingWhitelist;
+    public Set<String> getUnloadingBlacklist() {
+        return unloadingBlacklist;
     }
 }
