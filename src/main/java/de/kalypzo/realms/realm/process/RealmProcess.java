@@ -40,4 +40,9 @@ public interface RealmProcess<T> {
      */
     CompletableFuture<Optional<T>> getFuture();
 
+    /**
+     * @return Whether the process needs to be executed on main-thread.
+     */
+    boolean needsExecutedSynchronously();
+
 }

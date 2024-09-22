@@ -10,8 +10,4 @@ public interface RealmProcessObserver {
      */
     void onProgressChange();
 
-    /**
-     * Called when the process is completed.
-     */
-    void onComplete();
 }

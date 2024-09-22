@@ -2,12 +2,9 @@ package de.kalypzo.realms.realm.process;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 /**
@@ -15,14 +12,10 @@ import java.util.function.Consumer;
  *
  * @param <T> final result type
  */
-public class RealmProcessSequence<T> implements RealmProcess<T>, RealmProcessObserver, Cancellable {
+public class RealmProcessSequence<T> extends AbstractRealmProcess<T> implements RealmProcessObserver, Cancellable {
     private boolean cancelled = false;
-    private final List<RealmProcessObserver> observers = new LinkedList<>();
-    private int index = 0;
+    private int index = -1;
     private final RealmProcess<?>[] processes;
-    private final float[] progress = {0f};
-    @Getter
-    private final CompletableFuture<Optional<T>> future = new CompletableFuture<>();
     @Getter
     @Setter
     private Consumer<RealmProcess<?>> subProcessCompletionHandler;
@@ -37,18 +30,23 @@ public class RealmProcessSequence<T> implements RealmProcess<T>, RealmProcessObs
             throw new IllegalArgumentException("No processes provided");
         }
         this.processes = processes;
+        goNextProcess();
     }
 
     /**
      * Selects the next process and subscribes to it
      */
     public void goNextProcess() {
-        if (index >= processes.length) {
+        if (index > processes.length) {
             return;
         }
-        getCurrentProcess().unsubscribe(this);
+        if (getCurrentProcess() != null) {
+            getCurrentProcess().unsubscribe(this);
+        }
         index++;
-        getCurrentProcess().subscribe(this);
+        if (getCurrentProcess() != null) {
+            getCurrentProcess().subscribe(this);
+        }
     }
 
     /**
@@ -69,20 +67,16 @@ public class RealmProcessSequence<T> implements RealmProcess<T>, RealmProcessObs
     @Override
     public void run(ExecutionContext executionContext) {
         if (isCancelled()) return;
-        getCurrentProcess().run(executionContext);
+        if (getCurrentProcess() != null) {
+            getCurrentProcess().run(executionContext);
+        }
     }
 
-    @Override
-    public void subscribe(RealmProcessObserver observer) {
-        observers.add(observer);
-    }
 
-    @Override
-    public void unsubscribe(RealmProcessObserver observer) {
-        observers.remove(observer);
-    }
-
-    public RealmProcess<?> getCurrentProcess() {
+    public @Nullable RealmProcess<?> getCurrentProcess() {
+        if (index < 0 || index >= processes.length) {
+            return null;
+        }
         return processes[index];
     }
 
@@ -92,26 +86,12 @@ public class RealmProcessSequence<T> implements RealmProcess<T>, RealmProcessObs
         return future.isDone();
     }
 
-    @Override
-    public @Range(from = 0, to = 1) float getProgress() {
-        return progress[0];
-    }
-
 
     @Override
     public void onProgressChange() {
-        float currentProgress = getCurrentProcess().getProgress();
-        this.progress[0] = Float.min(Float.max((index + currentProgress) / processes.length, 0f), 1f);
-        for (RealmProcessObserver observer : observers) {
-            observer.onProgressChange();
-        }
-    }
-
-
-    @Override
-    public void onComplete() {
-        subProcessCompletionHandler.accept(getCurrentProcess());
-        goNextProcess();
+        if (getCurrentProcess() == null) return;
+        float currentProcessProgress = getCurrentProcess().getProgress();
+        setProgress(Float.min(Float.max((index + currentProcessProgress) / processes.length, 0f), 1f));
     }
 
     @Override
@@ -133,7 +113,7 @@ public class RealmProcessSequence<T> implements RealmProcess<T>, RealmProcessObs
         if (getCurrentProcess() instanceof Cancellable cancellable) {
             boolean success = cancellable.cancel();
             if (success) {
-                future.complete(Optional.empty());
+                super.future.complete(Optional.empty());
                 cancelled = true;
             }
             return success;

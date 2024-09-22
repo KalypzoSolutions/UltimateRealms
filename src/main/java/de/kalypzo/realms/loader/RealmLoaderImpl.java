@@ -1,7 +1,9 @@
 package de.kalypzo.realms.loader;
 
+import de.kalypzo.realms.RealmPlugin;
 import de.kalypzo.realms.realm.ActiveRealmWorld;
 import de.kalypzo.realms.realm.RealmWorld;
+import de.kalypzo.realms.realm.process.ProcessExecutor;
 import de.kalypzo.realms.realm.process.RealmProcessSequence;
 import de.kalypzo.realms.realm.process.impl.DummyRealmProcess;
 import de.kalypzo.realms.storage.RealmWorldFileStorage;
@@ -14,10 +16,14 @@ public class RealmLoaderImpl implements RealmLoader {
 
     private final WorldLoader worldLoader;
     private final RealmWorldFileStorage realmWorldFileStorage;
+    private final RealmPlugin plugin;
+    private final ProcessExecutor processExecutor;
 
-    public RealmLoaderImpl(WorldLoader worldLoader, RealmWorldFileStorage realmWorldFileStorage) {
+    public RealmLoaderImpl(WorldLoader worldLoader, RealmWorldFileStorage realmWorldFileStorage, RealmPlugin plugin) {
         this.worldLoader = worldLoader;
         this.realmWorldFileStorage = realmWorldFileStorage;
+        this.plugin = plugin;
+        this.processExecutor = new ProcessExecutor(plugin);
     }
 
 
@@ -31,11 +37,14 @@ public class RealmLoaderImpl implements RealmLoader {
      */
     @Override
     public RealmProcessSequence<?> loadRealm(UUID realmId) {
-        return new RealmProcessSequence<>(
+        var procSeq = new RealmProcessSequence<>(
                 new DummyRealmProcess(),
                 new DummyRealmProcess()
         );
+        processExecutor.execute(procSeq);
+        return procSeq;
     }
+
 
     @Override
     public RealmProcessSequence<?> loadRealm(RealmWorld realmWorld) {

@@ -1,13 +1,14 @@
 package de.kalypzo.realms.realm.process.impl;
 
+import de.kalypzo.realms.realm.process.AbstractRealmProcess;
 import de.kalypzo.realms.realm.process.ExecutionContext;
 import org.jetbrains.annotations.Range;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
 public class DummyRealmProcess extends AbstractRealmProcess<Integer> {
 
+    public DummyRealmProcess() {
+        super();
+    }
 
     @Override
     public boolean isCompleted() {
@@ -24,8 +25,4 @@ public class DummyRealmProcess extends AbstractRealmProcess<Integer> {
         return 0;
     }
 
-    @Override
-    public CompletableFuture<Optional<Integer>> getFuture() {
-        return null;
-    }
 }
