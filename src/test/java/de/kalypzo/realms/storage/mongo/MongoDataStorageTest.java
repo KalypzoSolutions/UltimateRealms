@@ -7,12 +7,14 @@ import de.kalypzo.realms.realm.flag.FlagContainer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
+@EnabledIfEnvironmentVariable(named = "MONGO_TESTS", matches = "true")
 public class MongoDataStorageTest {
     private static UUID realmId = UUID.randomUUID();
     private static UUID ownerUuid = UUID.randomUUID();
