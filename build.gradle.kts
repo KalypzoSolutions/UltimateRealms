@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     implementation("org.incendo:cloud-paper:2.0.0-SNAPSHOT")
-    implementation("org.incendo:cloud-minecraft-extras:2.0.0-beta.9")
+    implementation("org.incendo:cloud-minecraft-extras:2.0.0-SNAPSHOT")
     implementation("org.incendo:cloud-annotations:2.0.0")
     implementation("com.github.hamza-cskn.obliviate-invs:core:4.3.0")
     implementation("com.github.hamza-cskn.obliviate-invs:pagination:4.3.0")
