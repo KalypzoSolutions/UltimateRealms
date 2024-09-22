@@ -2,7 +2,8 @@ package de.kalypzo.realms.loader;
 
 import de.kalypzo.realms.realm.ActiveRealmWorld;
 import de.kalypzo.realms.realm.RealmWorld;
-import de.kalypzo.realms.realm.process.RealmProcess;
+import de.kalypzo.realms.realm.process.RealmProcessSequence;
+import de.kalypzo.realms.realm.process.impl.DummyRealmProcess;
 import de.kalypzo.realms.storage.RealmWorldFileStorage;
 import lombok.Getter;
 
@@ -29,17 +30,20 @@ public class RealmLoaderImpl implements RealmLoader {
      * @return the realm process
      */
     @Override
-    public RealmProcess loadRealm(UUID realmId) {
-        return null;
+    public RealmProcessSequence<?> loadRealm(UUID realmId) {
+        return new RealmProcessSequence<>(
+                new DummyRealmProcess(),
+                new DummyRealmProcess()
+        );
     }
 
     @Override
-    public RealmProcess loadRealm(RealmWorld realmWorld) {
+    public RealmProcessSequence<?> loadRealm(RealmWorld realmWorld) {
         return loadRealm(realmWorld.getRealmId());
     }
 
     @Override
-    public RealmProcess unloadRealm(ActiveRealmWorld realm) {
+    public RealmProcessSequence<?> unloadRealm(ActiveRealmWorld realm) {
         return null;
     }
 }
