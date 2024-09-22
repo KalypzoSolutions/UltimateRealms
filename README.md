@@ -6,7 +6,7 @@
 
 
 ---
-
+WIP - Work in progress
 
 
 Easy Realm Creation for Minecraft Java Edition Servers.
@@ -14,7 +14,7 @@ Easy Realm Creation for Minecraft Java Edition Servers.
 ## Features
 
 - [ ] Multiple Storage Methods
-    - [ ] SFTP / SSH (zip)
+    - [x] SFTP / SSH (zip)
     - [ ] Local (zip)
 -  [ ] Slime Region Format Support
 - [ ] Realm-World Creation
