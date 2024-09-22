@@ -30,7 +30,7 @@ dependencies {
     // TESTS
     testImplementation("com.hierynomus:sshj:0.38.0")
     testImplementation("com.google.guava:guava:33.3.0-jre")
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation(platform("org.junit:junit-bom:5.11.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testCompileOnly("org.projectlombok:lombok:1.18.34")
     testImplementation("org.slf4j:slf4j-api:2.0.7")
