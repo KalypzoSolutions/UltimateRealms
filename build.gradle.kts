@@ -5,15 +5,13 @@ plugins {
 }
 
 group = "de.kalypzo"
-version = "1.0-SNAPSHOT"
+version = "0.2-DEV"
 
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.oraxen.com/releases")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://jitpack.io")
-    maven("https://repo.akani.dev/releases")
 }
 
 dependencies {
@@ -27,9 +25,7 @@ dependencies {
     compileOnly("com.hierynomus:sshj:0.38.0") // provided by spigot library loader
     compileOnly("org.projectlombok:lombok:1.18.34")
     annotationProcessor("org.projectlombok:lombok:1.18.34")
-
-
-    compileOnly("me.clip:placeholderapi:2.11.5")
+    compileOnly("me.clip:placeholderapi:2.11.6")
     // TESTS
     testImplementation("com.hierynomus:sshj:0.38.0")
     testImplementation("com.google.guava:guava:33.3.0-jre")
