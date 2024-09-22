@@ -1,5 +1,6 @@
 package de.kalypzo.realms;
 
+import de.kalypzo.realms.command.CommandManager;
 import de.kalypzo.realms.config.RealmPluginConfiguration;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +14,7 @@ public class RealmPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        new CommandManager(this);
         RealmAPIProvider.setInstance(new ForwardingRealmAPI(this));
 
     }

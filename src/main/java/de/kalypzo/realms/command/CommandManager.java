@@ -1,6 +1,9 @@
 package de.kalypzo.realms.command;
 
 import de.kalypzo.realms.RealmPlugin;
+import de.kalypzo.realms.command.realm.CreateRealmCmd;
+import de.kalypzo.realms.command.realm.DebugCmd;
+import de.kalypzo.realms.command.realm.HelpCmd;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.AnnotationParser;
 import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
@@ -46,6 +49,11 @@ public class CommandManager {
 
     protected void registerCommands() {
         AnnotationParser<CommandSender> annotationParser = new AnnotationParser<>(commandManager, CommandSender.class);
+        annotationParser.parse(
+                new CreateRealmCmd(this),
+                new DebugCmd(this),
+                new HelpCmd(this)
+        );
     }
 
     public RealmPlugin getPlugin() {

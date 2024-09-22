@@ -51,4 +51,6 @@ public interface RealmWorld {
      */
     UUID getRealmId();
 
+    void setOwnerUuid(UUID ownerUuid);
+
 }
