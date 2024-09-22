@@ -1,6 +1,7 @@
 package de.kalypzo.realms.storage.bundler;
 
 import de.kalypzo.realms.config.WorldFileStorageConfiguration;
+import de.kalypzo.realms.storage.WorldStorageException;
 import de.kalypzo.realms.storage.ssh.SSHRealmWorldFileStorage;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.FileAttributes;
@@ -15,7 +16,7 @@ import java.nio.file.Path;
 import java.security.PublicKey;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnabledIfEnvironmentVariable(named = "SSH_TESTS", matches = "true", disabledReason = "SSH tests are disabled")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -56,6 +57,26 @@ class SSHRealmWorldFileStorageTest {
             assertNotNull(attributes, "Saved file should exist on remote server");
         }
     }
+
+
+    @Test
+    void testLoadNonExistent() {
+        assertThrows(WorldStorageException.class, () -> storage.loadFile("nonExistent", tempDir));
+    }
+
+    @Test
+    @Order(2)
+    void testExistingFileTrue() {
+        boolean exists = storage.isFileExisting(".idea");
+        assertTrue(exists);
+    }
+
+    @Test
+    void testExistingFileFalse() {
+        boolean exists = storage.isFileExisting("nonExistent");
+        assertFalse(exists);
+    }
+
 
     @Test
     @Order(2)
