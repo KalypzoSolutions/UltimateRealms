@@ -1,5 +1,9 @@
-package de.kalypzo.realms.realm.process;
+package de.kalypzo.realms.realm.process.impl;
 
+import de.kalypzo.realms.realm.process.Cancellable;
+import de.kalypzo.realms.realm.process.ExecutionContext;
+import de.kalypzo.realms.realm.process.RealmProcess;
+import de.kalypzo.realms.realm.process.RealmProcessObserver;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +19,7 @@ import java.util.function.Consumer;
 public class RealmProcessSequence<T> extends AbstractRealmProcess<T> implements RealmProcessObserver, Cancellable {
     private boolean cancelled = false;
     private int index = -1;
+    @Getter
     private final RealmProcess<?>[] processes;
     @Getter
     @Setter
@@ -35,17 +40,23 @@ public class RealmProcessSequence<T> extends AbstractRealmProcess<T> implements 
 
     /**
      * Selects the next process and subscribes to it
+     *
+     * @throws IllegalStateException if the current process is not done yet
      */
     public void goNextProcess() {
         if (index > processes.length) {
             return;
         }
-        if (getCurrentProcess() != null) {
-            getCurrentProcess().unsubscribe(this);
+        RealmProcess<?> currentProcess = getCurrentProcess();
+        if (currentProcess != null) {
+            if (!currentProcess.getFuture().isDone()) {
+                throw new IllegalStateException("Current process is not done yet.");
+            }
+            currentProcess.unsubscribe(this);
         }
         index++;
-        if (getCurrentProcess() != null) {
-            getCurrentProcess().subscribe(this);
+        if ((currentProcess = getCurrentProcess()) != null) {
+            currentProcess.subscribe(this);
         }
     }
 
@@ -67,8 +78,25 @@ public class RealmProcessSequence<T> extends AbstractRealmProcess<T> implements 
     @Override
     public void run(ExecutionContext executionContext) {
         if (isCancelled()) return;
-        if (getCurrentProcess() != null) {
-            getCurrentProcess().run(executionContext);
+        var proc = getCurrentProcess();
+        if (proc != null) {
+            proc.getFuture().whenComplete((result, throwable) -> {
+                if (isCancelled()) return;
+                if (throwable != null) {
+                    future.completeExceptionally(throwable);
+                    return;
+                }
+                if (isLastProcess()) {
+                    future.complete(Optional.ofNullable((T) result));
+                    return;
+                }
+                if (subProcessCompletionHandler != null) {
+                    subProcessCompletionHandler.accept(proc);
+                }
+                goNextProcess();
+                run(executionContext);
+            });
+            executionContext.getExecutor().execute(proc);
         }
     }
 
@@ -82,16 +110,10 @@ public class RealmProcessSequence<T> extends AbstractRealmProcess<T> implements 
 
 
     @Override
-    public boolean isCompleted() {
-        return future.isDone();
-    }
-
-
-    @Override
     public void onProgressChange() {
         if (getCurrentProcess() == null) return;
         float currentProcessProgress = getCurrentProcess().getProgress();
-        setProgress(Float.min(Float.max((index + currentProcessProgress) / processes.length, 0f), 1f));
+        setProgress(((index + currentProcessProgress) / processes.length));
     }
 
     @Override

@@ -1,7 +1,7 @@
-package de.kalypzo.realms.storage.bundler;
+package de.kalypzo.realms.storage;
 
 import de.kalypzo.realms.config.WorldFileStorageConfiguration;
-import de.kalypzo.realms.storage.WorldStorageException;
+import de.kalypzo.realms.storage.bundler.ZipBundler;
 import de.kalypzo.realms.storage.ssh.SSHRealmWorldFileStorage;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.FileAttributes;

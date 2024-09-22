@@ -3,8 +3,8 @@ package de.kalypzo.realms.loader;
 import de.kalypzo.realms.RealmPlugin;
 import de.kalypzo.realms.realm.ActiveRealmWorld;
 import de.kalypzo.realms.realm.RealmWorld;
-import de.kalypzo.realms.realm.process.ProcessExecutor;
-import de.kalypzo.realms.realm.process.RealmProcessSequence;
+import de.kalypzo.realms.realm.process.impl.BukkitProcessExecutor;
+import de.kalypzo.realms.realm.process.impl.RealmProcessSequence;
 import de.kalypzo.realms.realm.process.impl.DummyRealmProcess;
 import de.kalypzo.realms.storage.RealmWorldFileStorage;
 import lombok.Getter;
@@ -17,13 +17,13 @@ public class RealmLoaderImpl implements RealmLoader {
     private final WorldLoader worldLoader;
     private final RealmWorldFileStorage realmWorldFileStorage;
     private final RealmPlugin plugin;
-    private final ProcessExecutor processExecutor;
+    private final BukkitProcessExecutor processExecutor;
 
     public RealmLoaderImpl(WorldLoader worldLoader, RealmWorldFileStorage realmWorldFileStorage, RealmPlugin plugin) {
         this.worldLoader = worldLoader;
         this.realmWorldFileStorage = realmWorldFileStorage;
         this.plugin = plugin;
-        this.processExecutor = new ProcessExecutor(plugin);
+        this.processExecutor = new BukkitProcessExecutor(plugin);
     }
 
 
