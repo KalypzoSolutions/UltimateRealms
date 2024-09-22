@@ -10,6 +10,8 @@ import java.util.List;
  */
 public interface RealmHost {
 
+    int getHostNumericOrder();
+
     /**
      * @return the host's id
      */
