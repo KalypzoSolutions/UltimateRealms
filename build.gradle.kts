@@ -24,7 +24,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("com.hierynomus:sshj:0.39.0") // provided by spigot library loader
     compileOnly("org.projectlombok:lombok:1.18.34")
-    compileOnly("org.mongodb:mongodb-driver-sync:5.1.4")
+    compileOnly("org.mongodb:mongodb-driver-sync:5.2.0")
     annotationProcessor("org.projectlombok:lombok:1.18.34")
     compileOnly("me.clip:placeholderapi:2.11.6")
     // TESTS
@@ -35,7 +35,7 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.34")
     testImplementation("org.slf4j:slf4j-api:2.0.16")
     testImplementation("ch.qos.logback:logback-classic:1.5.8")
-    testImplementation("org.mongodb:mongodb-driver-sync:5.1.4")
+    testImplementation("org.mongodb:mongodb-driver-sync:5.2.0")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
 
 
