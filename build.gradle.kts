@@ -29,7 +29,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     // TESTS
     testImplementation("com.hierynomus:sshj:0.39.0")
-    testImplementation("com.google.guava:guava:33.3.0-jre")
+    testImplementation("com.google.guava:guava:33.3.1-jre")
     testImplementation(platform("org.junit:junit-bom:5.11.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testCompileOnly("org.projectlombok:lombok:1.18.34")
