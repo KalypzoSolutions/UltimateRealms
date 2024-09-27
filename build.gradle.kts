@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.2"
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
@@ -15,30 +15,59 @@ repositories {
 }
 
 dependencies {
-    implementation("org.incendo:cloud-paper:2.0.0-SNAPSHOT")
-    implementation("org.incendo:cloud-minecraft-extras:2.0.0-SNAPSHOT")
-    implementation("org.incendo:cloud-annotations:2.0.0")
-    implementation("com.github.hamza-cskn.obliviate-invs:core:4.3.0")
-    implementation("com.github.hamza-cskn.obliviate-invs:pagination:4.3.0")
-    implementation("com.github.hamza-cskn.obliviate-invs:advancedslot:4.3.0")
-    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
-    compileOnly("com.hierynomus:sshj:0.39.0") // provided by spigot library loader
-    compileOnly("org.projectlombok:lombok:1.18.34")
-    compileOnly("org.mongodb:mongodb-driver-sync:5.2.0")
-    annotationProcessor("org.projectlombok:lombok:1.18.34")
-    compileOnly("me.clip:placeholderapi:2.11.6")
+    implementation(libs.bundles.cloud)
+    implementation(libs.bundles.obliviate.invs)
+    compileOnly(libs.paper.api)
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+    compileOnly(libs.placeholderapi)
+    // provided by spigot library loader
+    compileOnly(libs.mongodb.driver.sync)
+    compileOnly(libs.sshj)
+
     // TESTS
-    testImplementation("com.hierynomus:sshj:0.39.0")
-    testImplementation("com.google.guava:guava:33.3.1-jre")
-    testImplementation(platform("org.junit:junit-bom:5.11.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testCompileOnly("org.projectlombok:lombok:1.18.34")
-    testImplementation("org.slf4j:slf4j-api:2.0.16")
-    testImplementation("ch.qos.logback:logback-classic:1.5.8")
-    testImplementation("org.mongodb:mongodb-driver-sync:5.2.0")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
+    testImplementation(libs.sshj)
+    testImplementation(libs.guava)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.test)
+    testCompileOnly(libs.lombok)
+    testImplementation(libs.mongodb.driver.sync)
+    testAnnotationProcessor(libs.lombok)
+}
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
+tasks {
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+    build {
+        dependsOn("shadowJar")
+    }
+
+    shadowJar {
+
+        relocate("org.incendo.cloud", "de.kalypzo.command.cloud")
+    }
+
+    runServer {
+        minecraftVersion("1.21.1")
+    }
+
+    processResources {
+        filesMatching("plugin.yml") {
+            expand(
+                mapOf(
+                    "version" to project.version.toString(),
+                    "mongosync" to libs.mongodb.driver.sync.get(),
+                    "sshj" to libs.sshj.get()
+                )
+            )
+        }
+    }
 }
 
 tasks.test {

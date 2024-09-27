@@ -1,6 +1,7 @@
 package de.kalypzo.realms.command.realm;
 
 import de.kalypzo.realms.command.CommandManager;
+import de.kalypzo.realms.command.RealmCommand;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
@@ -8,13 +9,12 @@ import org.incendo.cloud.annotations.CommandDescription;
 import org.incendo.cloud.minecraft.extras.MinecraftHelp;
 import org.jetbrains.annotations.Nullable;
 
-public class HelpCmd {
+public class HelpCmd extends RealmCommand {
 
-    private final CommandManager commandManager;
     private final MinecraftHelp<CommandSender> help;
 
     public HelpCmd(CommandManager commandManager) {
-        this.commandManager = commandManager;
+        super(commandManager);
         this.help = MinecraftHelp.createNative("/realms help", commandManager.getCommandManager());
     }
 

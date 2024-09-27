@@ -5,3 +5,6 @@ description: UltimateRealms is a powerful plugin for realm-servers.
 version: ${version}
 name: UltimateRealms
 api-version: 1.13
+libraries:
+  - ${sshj}
+  - ${mongosync}
