@@ -15,10 +15,10 @@ public class HelpCmd extends RealmCommand {
 
     public HelpCmd(CommandManager commandManager) {
         super(commandManager);
-        this.help = MinecraftHelp.createNative("/realms help", commandManager.getCommandManager());
+        this.help = MinecraftHelp.createNative("/realm help", commandManager.getCommandManager());
     }
 
-    @Command("realms help [query]")
+    @Command("realm help [query]")
     @CommandDescription("Displays the help message.")
     public void help(CommandSender sender, @Argument(value = "query") @Nullable String[] query) {
         String parsedQuery = query == null ? "" : String.join(" ", query);

@@ -1,4 +1,4 @@
 package de.kalypzo.realms.realm;
 
-public interface RealmGenerator {
+public class ActiveRealmWorldImpl {
 }

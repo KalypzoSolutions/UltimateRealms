@@ -2,10 +2,15 @@ package de.kalypzo.realms.command.realm;
 
 import de.kalypzo.realms.command.CommandManager;
 import de.kalypzo.realms.command.RealmCommand;
+import de.kalypzo.realms.player.RealmPlayer;
+import de.kalypzo.realms.realm.RealmCreationContext;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.CommandDescription;
 import org.incendo.cloud.annotations.Permission;
+
+import java.util.concurrent.CompletableFuture;
 
 public class CreateRealmCmd extends RealmCommand {
 
@@ -13,11 +18,19 @@ public class CreateRealmCmd extends RealmCommand {
         super(commandManager);
     }
 
-    @Command("realm|realms create|auto|new")
+    @Command("realm create")
     @CommandDescription("Create a new realm")
     @Permission("realms.create")
-    public void createRealm(CommandSender commandSender) {
-
+    public CompletableFuture<Void> createRealm(CommandSender commandSender) {
+        RealmPlayer realmPlayer;
+        if (commandSender instanceof Player player) {
+            realmPlayer = RealmPlayer.of(player.getUniqueId());
+        } else {
+            realmPlayer = RealmPlayer.SERVER;
+        }
+        return super.runAsync(() -> {
+            super.getRealmApi().getRealmWorldManager().createRealm(new RealmCreationContext(realmPlayer));
+        });
     }
 
 }

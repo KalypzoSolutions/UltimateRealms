@@ -1,5 +1,6 @@
 [versions]
 cloud = "2.0.0-SNAPSHOT"
+cloud-paper = "2.0.0-beta.10"
 cloud-annotations = "2.0.0"
 obliviate-invs = "4.3.0"
 paper = "1.21.1-R0.1-SNAPSHOT"
@@ -14,9 +15,9 @@ logback = "1.5.8"
 jedis-mock = "1.1.4"
 
 [libraries]
-cloud-paper = { module = "org.incendo:cloud-paper", version.ref = "cloud" }
+cloud-paper = { module = "org.incendo:cloud-paper", version.ref = "cloud-paper" }
 cloud-minecraft-extras = { module = "org.incendo:cloud-minecraft-extras", version.ref = "cloud" }
-cloud-annotations = { module = "org.incendo:cloud-annotations", version.ref = "cloud-annotations" }
+cloudannotations = { module = "org.incendo:cloud-annotations", version.ref = "cloud-annotations" }
 obliviate-invs-core = { module = "com.github.hamza-cskn.obliviate-invs:core", version.ref = "obliviate-invs" }
 obliviate-invs-pagination = { module = "com.github.hamza-cskn.obliviate-invs:pagination", version.ref = "obliviate-invs" }
 obliviate-invs-advancedslot = { module = "com.github.hamza-cskn.obliviate-invs:advancedslot", version.ref = "obliviate-invs" }
@@ -34,5 +35,5 @@ jedis-mock = { module = "com.github.fppt:jedis-mock", version.ref = "jedis-mock"
 
 [bundles]
 obliviate-invs = ["obliviate-invs-core", "obliviate-invs-pagination", "obliviate-invs-advancedslot"]
-cloud = ["cloud-paper", "cloud-minecraft-extras", "cloud-annotations"]
+cloud = ["cloud-paper", "cloud-minecraft-extras", "cloudannotations"]
 test = ["junit-jupiter", "slf4j-api", "logback-classic", "jedis-mock"]

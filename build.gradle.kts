@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     implementation(libs.bundles.cloud)
+    annotationProcessor(libs.cloudannotations)
     implementation(libs.bundles.obliviate.invs)
     compileOnly(libs.paper.api)
     compileOnly(libs.lombok)
@@ -50,7 +51,7 @@ tasks {
 
     shadowJar {
 
-        relocate("org.incendo.cloud", "de.kalypzo.command.cloud")
+        //relocate("org.incendo.cloud", "de.kalypzo.command.cloud")
     }
 
     runServer {
