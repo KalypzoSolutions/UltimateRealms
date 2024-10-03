@@ -25,6 +25,7 @@ dependencies {
     // provided by spigot library loader
     compileOnly(libs.mongodb.driver.sync)
     compileOnly(libs.sshj)
+    compileOnly(libs.confgurate)
 
     // TESTS
     testImplementation(libs.sshj)
@@ -34,6 +35,7 @@ dependencies {
     testCompileOnly(libs.lombok)
     testImplementation(libs.mongodb.driver.sync)
     testAnnotationProcessor(libs.lombok)
+    testImplementation(libs.confgurate)
 }
 
 java {
@@ -51,7 +53,9 @@ tasks {
 
     shadowJar {
 
-        //relocate("org.incendo.cloud", "de.kalypzo.command.cloud")
+        relocate("org.incendo.cloud", "de.kalypzo.realms.command.incendocloud")
+        relocate("com.github.Anon8281","de.kalypzo.realms.util")
+        relocate("mc.obliviate", "de.kalypzo.realms.util.obliviateinv")
     }
 
     runServer {
@@ -64,7 +68,8 @@ tasks {
                 mapOf(
                     "version" to project.version.toString(),
                     "mongosync" to libs.mongodb.driver.sync.get(),
-                    "sshj" to libs.sshj.get()
+                    "sshj" to libs.sshj.get(),
+                    "configurate" to libs.confgurate.get()
                 )
             )
         }
