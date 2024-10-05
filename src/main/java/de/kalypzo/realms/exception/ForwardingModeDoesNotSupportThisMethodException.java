@@ -1,4 +1,4 @@
-package de.kalypzo.realms;
+package de.kalypzo.realms.exception;
 
 public class ForwardingModeDoesNotSupportThisMethodException extends UnsupportedOperationException {
     public ForwardingModeDoesNotSupportThisMethodException() {

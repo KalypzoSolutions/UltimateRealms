@@ -1,6 +1,8 @@
 package de.kalypzo.realms.loader;
 
 import de.kalypzo.realms.RealmPlugin;
+import de.kalypzo.realms.generator.GenerationSettings;
+import de.kalypzo.realms.generator.RealmGenerator;
 import de.kalypzo.realms.world.*;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -32,6 +34,10 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
+    @Override
+    public WorldHandle createWorld(RealmGenerator generator, GenerationSettings settings) {
+        return generator.generateRealm(this, settings);
+    }
 
     public void processUnloadingQueue() { //TODO: not used
         while (!unloadingQueue.isEmpty()) {

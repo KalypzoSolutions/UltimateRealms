@@ -1,5 +1,7 @@
 package de.kalypzo.realms.loader;
 
+import de.kalypzo.realms.generator.GenerationSettings;
+import de.kalypzo.realms.generator.RealmGenerator;
 import de.kalypzo.realms.world.WorldHandle;
 import de.kalypzo.realms.world.WorldObserverFactory;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +11,16 @@ import org.jetbrains.annotations.Nullable;
  * Can load a file into a world
  */
 public interface WorldLoader {
+
+    /**
+     * Creates a new world with the given generator and settings.
+     *
+     * @param generator the generator to use.
+     * @param settings  the settings to use.
+     * @return the created world handle.
+     */
+    WorldHandle createWorld(RealmGenerator generator, GenerationSettings settings);
+
     /**
      * @param fileName the name of the world folder to load.
      * @return the loaded world handle or null if the world could not be loaded.

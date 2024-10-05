@@ -1,6 +1,7 @@
 package de.kalypzo.realms.realm;
 
 import de.kalypzo.realms.player.RealmPlayer;
+import de.kalypzo.realms.realm.process.RealmProcess;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +19,8 @@ public class RealmWorldManagerImpl implements RealmWorldManager {
     }
 
     @Override
-    public void createRealm(RealmCreationContext context) {
-
+    public RealmProcess<ActiveRealmWorld> createRealm(RealmCreationContext context) {
+        return null;
     }
 
     @Override

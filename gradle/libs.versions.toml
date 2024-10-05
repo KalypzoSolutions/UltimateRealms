@@ -13,6 +13,7 @@ junit = "5.11.1"
 slf4j = "2.0.16"
 logback = "1.5.8"
 jedis-mock = "1.1.4"
+configurate = "4.1.2"
 
 [libraries]
 cloud-paper = { module = "org.incendo:cloud-paper", version.ref = "cloud-paper" }
@@ -32,6 +33,7 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 jedis-mock = { module = "com.github.fppt:jedis-mock", version.ref = "jedis-mock" }
+confgurate = { module = "org.spongepowered:configurate-yaml", version.ref = "configurate" }
 
 [bundles]
 obliviate-invs = ["obliviate-invs-core", "obliviate-invs-pagination", "obliviate-invs-advancedslot"]

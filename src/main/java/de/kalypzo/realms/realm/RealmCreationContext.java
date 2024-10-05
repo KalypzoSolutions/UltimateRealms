@@ -1,7 +1,7 @@
 package de.kalypzo.realms.realm;
 
 import de.kalypzo.realms.player.RealmPlayer;
-import de.kalypzo.realms.realm.generator.RealmGenerator;
+import de.kalypzo.realms.generator.RealmGenerator;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
