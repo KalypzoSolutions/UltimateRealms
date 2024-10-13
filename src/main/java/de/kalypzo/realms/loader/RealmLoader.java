@@ -4,8 +4,6 @@ import de.kalypzo.realms.realm.ActiveRealmWorld;
 import de.kalypzo.realms.realm.RealmWorld;
 import de.kalypzo.realms.realm.process.RealmProcess;
 
-import java.util.UUID;
-
 /**
  * Using this interface you can load and unload realms
  */
@@ -17,7 +15,7 @@ public interface RealmLoader {
      * @param realmId the id of the realm
      * @return the realm process
      */
-    RealmProcess loadRealm(UUID realmId);
+    RealmProcess<ActiveRealmWorld> loadRealm(String realmId);
 
     /**
      * Load a realm
@@ -25,7 +23,7 @@ public interface RealmLoader {
      * @param realmWorld the realm world
      * @return the realm process
      */
-    RealmProcess loadRealm(RealmWorld realmWorld);
+    RealmProcess<ActiveRealmWorld> loadRealm(RealmWorld realmWorld);
 
     /**
      * Unload a realm
@@ -33,5 +31,5 @@ public interface RealmLoader {
      * @param realm the realm to unload
      * @return the realm process
      */
-    RealmProcess unloadRealm(ActiveRealmWorld realm);
+    RealmProcess<?> unloadRealm(ActiveRealmWorld realm);
 }

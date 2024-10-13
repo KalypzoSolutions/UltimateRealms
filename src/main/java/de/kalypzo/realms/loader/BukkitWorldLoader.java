@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,11 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
     }
 
     @Override
+    public boolean isWorldLoaded(@NotNull String fileName) {
+        return loadedWorlds.stream().anyMatch(worldHandle -> worldHandle.getWorldName().equals(fileName));
+    }
+
+    @Override
     public void addWorldObserverFactory(WorldObserverFactory factory) {
         observerFactoryList.add(factory);
     }
@@ -62,7 +68,7 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
     /**
      * Expects the world to be in the world container of the server.
      */
-    public WorldHandle loadWorld(@NotNull String worldName) {
+    public @Nullable WorldHandle loadWorld(@NotNull String worldName) {
         getLogger().info("Loading world: {}", worldName);
         World bukkitWorld = Bukkit.getWorld(worldName);
         if (bukkitWorld == null) {

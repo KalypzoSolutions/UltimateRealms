@@ -1,5 +1,9 @@
 package de.kalypzo.realms.util;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -8,6 +12,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class ExecutionUtil {
+    @Getter(onMethod_ = { } )
+    private static TaskScheduler scheduler;
+
+    public static void init(JavaPlugin plugin) {
+        scheduler = UniversalScheduler.getScheduler(plugin);
+    }
+
+    public static void checkInit() {
+
+    }
+
 
     public static <T> CompletableFuture<T> supplyAsync(JavaPlugin plugin, Supplier<T> supplier) {
         CompletableFuture<T> future = new CompletableFuture<>();

@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface WorldLoader {
 
+    boolean isWorldLoaded(@NotNull String fileName);
+
     /**
      * Creates a new world with the given generator and settings.
      *

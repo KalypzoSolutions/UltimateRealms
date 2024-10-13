@@ -4,13 +4,17 @@ import de.kalypzo.realms.config.WorldFileStorageConfiguration;
 import de.kalypzo.realms.storage.RealmWorldFileStorage;
 import de.kalypzo.realms.storage.WorldStorageException;
 import de.kalypzo.realms.storage.bundler.FolderBundler;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.xfer.FileSystemFile;
+import net.schmizz.sshj.xfer.TransferListener;
 import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 import net.schmizz.sshj.xfer.scp.SCPRemoteException;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -18,27 +22,39 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Getter
 public class SSHRealmWorldFileStorage implements RealmWorldFileStorage {
     private static final Logger LOGGER = LoggerFactory.getLogger(SSHRealmWorldFileStorage.class);
     private final SSHClient sshClient;
     private final WorldFileStorageConfiguration worldFileStorageConfiguration;
     private final FolderBundler folderBundler;
+    private final Path tempFolder;
+    @Setter
+    private @Nullable TransferListener sshTransferListener;
 
     public SSHRealmWorldFileStorage(SSHClient sshClient,
                                     WorldFileStorageConfiguration worldFileStorageConfiguration,
-                                    FolderBundler folderBundler) {
+                                    FolderBundler folderBundler, Path tempFolder) {
         this.sshClient = sshClient;
         this.worldFileStorageConfiguration = worldFileStorageConfiguration;
         this.folderBundler = folderBundler;
+        this.tempFolder = tempFolder;
         checkConnection();
         checkRemoteFolderStructure();
     }
 
     @Override
-    public Path loadFile(@NotNull @NonNull String remoteFileNameWithoutExtension, @NotNull @NonNull Path destinationFolder) {
+    public Path loadFile(@NotNull @NonNull String remoteFileNameWithoutExtension, @NotNull @NonNull Path destinationFolderName) {
+        if (Files.exists(destinationFolderName)) {
+            throw new WorldStorageException("Destination folder already exists: " + destinationFolderName);
+        }
         SCPFileTransfer fileTransfer = sshClient.newSCPFileTransfer();
+        if (sshTransferListener != null) {
+            fileTransfer.setTransferListener(sshTransferListener);
+        }
         try {
             String fileName;
             if (!remoteFileNameWithoutExtension.endsWith(folderBundler.getFileNameExtension())) { // just to be sure
@@ -47,10 +63,14 @@ public class SSHRealmWorldFileStorage implements RealmWorldFileStorage {
                 fileName = remoteFileNameWithoutExtension;
             }
             String remotePath = new File(worldFileStorageConfiguration.getRemoteFolder(), fileName).toString();
-            LOGGER.info("Downloading world via SSH from {} to {}", fileName, destinationFolder);
-            fileTransfer.download(remotePath, destinationFolder.toAbsolutePath().toString());
-            Path bundledFile = destinationFolder.resolve(fileName);
-            return folderBundler.extractBundle(bundledFile);
+            LOGGER.info("Downloading world via SSH from {} to {}", fileName, tempFolder);
+            fileTransfer.download(remotePath, tempFolder.toAbsolutePath().toString());
+            Path bundledFile = tempFolder.resolve(fileName);
+            var extracted = folderBundler.extractBundle(bundledFile);
+            LOGGER.info("Extracted world {} to {}", bundledFile, extracted);
+            FileUtils.copyDirectoryToDirectory(extracted.toFile(), destinationFolderName.toFile());
+            LOGGER.info("Copied world {} to {}", extracted, destinationFolderName.toFile());
+            return destinationFolderName;
         } catch (SCPRemoteException remoteException) {
             throw new WorldStorageException(remoteException.getRemoteMessage(), remoteException);
         } catch (Exception e) {

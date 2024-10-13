@@ -87,7 +87,11 @@ public class RealmProcessSequence<T> extends AbstractRealmProcess<T> implements 
                     return;
                 }
                 if (isLastProcess()) {
-                    future.complete(Optional.ofNullable((T) result));
+                    try {
+                        future.complete(Optional.ofNullable((T) result));
+                    } catch (ClassCastException ex) {
+                        throw new IllegalStateException("Invalid result type in final process", ex);
+                    }
                     return;
                 }
                 if (subProcessCompletionHandler != null) {

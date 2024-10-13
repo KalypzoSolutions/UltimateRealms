@@ -30,7 +30,7 @@ public class CreateRealmCmd extends RealmCommand {
             realmPlayer = RealmPlayer.SERVER;
         }
         return super.runAsync(() -> {
-            super.getRealmApi().getRealmWorldManager().createRealm(new RealmCreationContext(realmPlayer, null));
+            super.getRealmApi().getRealmWorldManager().createRealm(new RealmCreationContext(realmPlayer));
         });
     }
 

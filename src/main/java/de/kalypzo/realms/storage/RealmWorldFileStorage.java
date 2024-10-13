@@ -14,7 +14,7 @@ public interface RealmWorldFileStorage {
 
     /**
      * @param remoteFileName the name of the file to load the world from
-     * @return path to the world-folder
+     * @return path to the worlds-container-folder
      * @throws WorldStorageException if the file could not be loaded
      */
     Path loadFile(@NotNull @NonNull String remoteFileName, @NotNull @NonNull Path destinationFolder);

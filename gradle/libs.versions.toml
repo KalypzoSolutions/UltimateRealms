@@ -14,14 +14,17 @@ slf4j = "2.0.16"
 logback = "1.5.8"
 jedis-mock = "1.1.4"
 configurate = "4.1.2"
+apache-commons = "2.17.0"
 
 [libraries]
+
 cloud-paper = { module = "org.incendo:cloud-paper", version.ref = "cloud-paper" }
 cloud-minecraft-extras = { module = "org.incendo:cloud-minecraft-extras", version.ref = "cloud" }
 cloudannotations = { module = "org.incendo:cloud-annotations", version.ref = "cloud-annotations" }
 obliviate-invs-core = { module = "com.github.hamza-cskn.obliviate-invs:core", version.ref = "obliviate-invs" }
 obliviate-invs-pagination = { module = "com.github.hamza-cskn.obliviate-invs:pagination", version.ref = "obliviate-invs" }
 obliviate-invs-advancedslot = { module = "com.github.hamza-cskn.obliviate-invs:advancedslot", version.ref = "obliviate-invs" }
+apachecommonsio = {module = "commons-io:commons-io", version.ref = "apache-commons"}
 paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
 sshj = { module = "com.hierynomus:sshj", version.ref = "sshj" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }

@@ -8,17 +8,17 @@ import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.PublicKey;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@EnabledIfEnvironmentVariable(named = "SSH_TESTS", matches = "true", disabledReason = "SSH tests are disabled")
+//@EnabledIfEnvironmentVariable(named = "SSH_TESTS", matches = "true", disabledReason = "SSH tests are disabled")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SSHRealmWorldFileStorageTest {
 
@@ -38,7 +38,7 @@ class SSHRealmWorldFileStorageTest {
     void setUp() throws IOException {
         sshClient = createSSHClient();
         config = createTestConfig();
-        storage = new SSHRealmWorldFileStorage(sshClient, config, new ZipBundler(tempDir));
+        storage = new SSHRealmWorldFileStorage(sshClient, config, new ZipBundler(tempDir), tempDir);
     }
 
     @AfterEach
@@ -53,7 +53,7 @@ class SSHRealmWorldFileStorageTest {
         storage.saveFile(ideaFolder);
 
         try (SFTPClient sftpClient = sshClient.newSFTPClient()) {
-            FileAttributes attributes = sftpClient.statExistence(config.getRemoteFolder() + ".idea.zip");
+            FileAttributes attributes = sftpClient.statExistence(config.getRemoteFolder() + ".idea" + storage.getFolderBundler().getFileNameExtension());
             assertNotNull(attributes, "Saved file should exist on remote server");
         }
     }
@@ -80,9 +80,17 @@ class SSHRealmWorldFileStorageTest {
 
     @Test
     @Order(2)
-    void testLoadFile() throws Exception {
-        Path loaded = storage.loadFile(".idea", tempDir);
+    void testLoadFile() {
+        Path destination = tempDir.resolve("workspace/my_realm");
+        Path loaded = storage.loadFile(".idea", destination);
         assertNotNull(loaded, "Loaded file should not be null");
+    }
+
+    @Test
+    void testLoadingWithExistingDestinationFolder() throws IOException {
+        var existing = tempDir.resolve("existing_realm");
+        Files.createDirectories(existing);
+        assertThrows(WorldStorageException.class, () -> storage.loadFile(".idea", existing));
     }
 
     private SSHClient createSSHClient() throws IOException {
