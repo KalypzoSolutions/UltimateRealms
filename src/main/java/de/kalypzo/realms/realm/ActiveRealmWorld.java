@@ -33,6 +33,13 @@ public interface ActiveRealmWorld extends RealmWorld, WorldObserver {
     Duration getUptime();
 
     /**
+     * Returns the uptime of the realm-world in milliseconds.
+     *
+     * @return the uptime of the realm-world in milliseconds.
+     */
+    long getUptimeMillis();
+
+    /**
      * Returns whether the realm-world is currently idle.
      * An idle realm-world is not being used by any player.
      *

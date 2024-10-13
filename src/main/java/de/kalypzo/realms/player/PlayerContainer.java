@@ -1,7 +1,6 @@
 package de.kalypzo.realms.player;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -19,5 +18,8 @@ public interface PlayerContainer {
 
     boolean removePlayer(UUID playerUuid);
 
+    boolean addAll(Collection<UUID> playerUuids);
+
+    boolean removeAll(Collection<UUID> playerUuids);
 
 }

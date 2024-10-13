@@ -29,6 +29,7 @@ public class PlayerContainerImpl implements PlayerContainer {
         return realmPlayerManager.getPlayersByUuids(playerUuids);
     }
 
+
     @Override
     public boolean addPlayer(UUID playerUuid) {
         return playerUuids.add(playerUuid);
@@ -37,5 +38,15 @@ public class PlayerContainerImpl implements PlayerContainer {
     @Override
     public boolean removePlayer(UUID playerUuid) {
         return playerUuids.remove(playerUuid);
+    }
+
+    @Override
+    public boolean addAll(Collection<UUID> playerUuids) {
+        return this.playerUuids.addAll(playerUuids);
+    }
+
+    @Override
+    public boolean removeAll(Collection<UUID> playerUuids) {
+        return this.playerUuids.removeAll(playerUuids);
     }
 }
