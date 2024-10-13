@@ -1,10 +1,15 @@
 package de.kalypzo.realms.network;
 
+import lombok.Getter;
+
 public class HostManager {
 
+    @Getter
+    private NetworkDiscovery latestCompletedNetworkDiscovery;
 
-    public void runDiscovery() {
 
+    public NetworkDiscovery runDiscovery() {
+        return null;
     }
 
 

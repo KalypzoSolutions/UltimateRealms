@@ -2,6 +2,9 @@ package de.kalypzo.realms.config;
 
 import de.kalypzo.realms.RealmPluginMode;
 
+/**
+ * Configuration for the Realm plugin
+ */
 public interface RealmPluginConfiguration {
 
     /**

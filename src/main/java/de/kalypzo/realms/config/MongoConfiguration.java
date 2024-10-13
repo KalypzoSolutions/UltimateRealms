@@ -2,9 +2,12 @@ package de.kalypzo.realms.config;
 
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Configuration for the MongoDB connection
+ */
 public interface MongoConfiguration {
 
-    boolean getUseMongo();
+    boolean isUseMongo();
 
     @Nullable String getConnectionUri();
 

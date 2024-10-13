@@ -2,7 +2,6 @@ package de.kalypzo.realms.storage;
 
 import de.kalypzo.realms.config.WorldFileStorageConfiguration;
 import de.kalypzo.realms.storage.bundler.ZipBundler;
-import de.kalypzo.realms.storage.ssh.SSHRealmWorldFileStorage;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -122,10 +121,6 @@ class SSHRealmWorldFileStorageTest {
                 return StorageType.SSH;
             }
 
-            @Override
-            public String getLocalPath() {
-                return ".";
-            }
 
             @Override
             public String getRemoteFolder() {

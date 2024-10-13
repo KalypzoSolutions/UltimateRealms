@@ -23,4 +23,7 @@ public interface RealmHost {
      */
     List<RealmWorld> getLoadedWorlds();
 
+    boolean hasLoadedWorld(RealmWorld world);
+
+    boolean hasLoadedWorld(String worldId);
 }

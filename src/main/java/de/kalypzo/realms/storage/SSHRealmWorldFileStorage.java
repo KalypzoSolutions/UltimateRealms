@@ -1,8 +1,6 @@
-package de.kalypzo.realms.storage.ssh;
+package de.kalypzo.realms.storage;
 
 import de.kalypzo.realms.config.WorldFileStorageConfiguration;
-import de.kalypzo.realms.storage.RealmWorldFileStorage;
-import de.kalypzo.realms.storage.WorldStorageException;
 import de.kalypzo.realms.storage.bundler.FolderBundler;
 import lombok.Getter;
 import lombok.NonNull;

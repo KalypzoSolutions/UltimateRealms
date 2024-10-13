@@ -24,7 +24,7 @@ public class MongoDataStorageTest {
     public static void setup() {
         mongoRealmDataStorage = new MongoRealmDataStorage(new MongoConfiguration() {
             @Override
-            public boolean getUseMongo() {
+            public boolean isUseMongo() {
                 return true;
             }
 

@@ -1,10 +1,11 @@
 package de.kalypzo.realms.config;
 
+/**
+ * User configuration for the storage of world files
+ */
 public interface WorldFileStorageConfiguration {
 
     StorageType getStorageType();
-
-    String getLocalPath();
 
     /**
      * @return the remote folder where the world files are stored
