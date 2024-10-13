@@ -26,12 +26,14 @@ dependencies {
     compileOnly(libs.mongodb.driver.sync)
     compileOnly(libs.sshj)
     compileOnly(libs.confgurate)
+    compileOnly(libs.apachecommonsio)
 
     // TESTS
     testImplementation(libs.sshj)
     testImplementation(libs.guava)
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.bundles.test)
+    testImplementation(libs.apachecommonsio)
     testCompileOnly(libs.lombok)
     testImplementation(libs.mongodb.driver.sync)
     testAnnotationProcessor(libs.lombok)
@@ -54,7 +56,7 @@ tasks {
     shadowJar {
 
         relocate("org.incendo.cloud", "de.kalypzo.realms.command.incendocloud")
-        relocate("com.github.Anon8281","de.kalypzo.realms.util")
+        relocate("com.github.Anon8281", "de.kalypzo.realms.util")
         relocate("mc.obliviate", "de.kalypzo.realms.util.obliviateinv")
     }
 
@@ -69,7 +71,8 @@ tasks {
                     "version" to project.version.toString(),
                     "mongosync" to libs.mongodb.driver.sync.get(),
                     "sshj" to libs.sshj.get(),
-                    "configurate" to libs.confgurate.get()
+                    "configurate" to libs.confgurate.get(),
+                    "apacheio" to libs.apachecommonsio.get()
                 )
             )
         }

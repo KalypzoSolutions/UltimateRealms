@@ -6,6 +6,7 @@ version: ${version}
 name: UltimateRealms
 api-version: 1.13
 libraries:
+  - ${apacheio}
   - ${sshj}
   - ${mongosync}
   - ${configurate}
