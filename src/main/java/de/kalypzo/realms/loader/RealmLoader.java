@@ -1,5 +1,6 @@
 package de.kalypzo.realms.loader;
 
+import de.kalypzo.realms.realm.ActiveRealmManager;
 import de.kalypzo.realms.realm.ActiveRealmWorld;
 import de.kalypzo.realms.realm.RealmWorld;
 
@@ -22,4 +23,11 @@ public interface RealmLoader {
      * @param realm the realm to unload
      */
     void unloadRealm(ActiveRealmWorld realm);
+
+
+    ActiveRealmManager getActiveRealmManager();
+
+    boolean isRealmLoaded(RealmWorld realmWorld);
+
+
 }

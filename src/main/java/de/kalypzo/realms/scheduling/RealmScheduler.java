@@ -1,8 +1,9 @@
 package de.kalypzo.realms.scheduling;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import de.kalypzo.realms.RealmPlugin;
 import lombok.Getter;
-import org.bukkit.scheduler.BukkitScheduler;
 
 /**
  * Allows scheduling per realm world.
@@ -10,12 +11,12 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class RealmScheduler {
     private final RealmPlugin plugin;
     @Getter
-    private BukkitScheduler bukkitScheduler;
+    private TaskScheduler scheduler;
 
 
     public RealmScheduler(RealmPlugin plugin) {
         this.plugin = plugin;
-        bukkitScheduler = plugin.getServer().getScheduler();
+        scheduler = UniversalScheduler.getScheduler(plugin);
     }
 
 

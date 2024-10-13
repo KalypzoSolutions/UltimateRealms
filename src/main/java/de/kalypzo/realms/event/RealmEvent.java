@@ -23,9 +23,10 @@ public abstract class RealmEvent extends Event {
     public RealmEvent(RealmWorld realmWorld, boolean async) {
         super(async);
         this.realmWorld = realmWorld;
-
-
     }
 
-
+    @Override
+    public boolean callEvent() {
+        return super.callEvent();
+    }
 }

@@ -21,12 +21,27 @@ public interface RealmPlayer {
      * @return Immutable list of realms that this player owns.
      */
     @Blocking
-    List<RealmWorld> getOwningRealms();
+    List<RealmWorld> getCachedOwningRealms();
 
     /**
      * @return CompletableFuture of an immutable list of realms that this player owns.
      */
     CompletableFuture<List<RealmWorld>> getOwningRealmsAsync();
+
+    /**
+     * Removes the realm from the list of realms that this player owns.
+     *
+     * @param realm RealmWorld instance.
+     */
+    void removeOwningRealm(RealmWorld realm);
+
+    /**
+     * Adds the realm to the list of realms that this player owns.
+     *
+     * @param realm RealmWorld instance.
+     */
+    void addOwningRealm(RealmWorld realm);
+
 
     /**
      * @param uuid UUID of the player.

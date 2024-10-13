@@ -2,8 +2,6 @@ package de.kalypzo.realms.util;
 
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
-import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class ExecutionUtil {
-    @Getter(onMethod_ = { } )
+
     private static TaskScheduler scheduler;
 
     public static void init(JavaPlugin plugin) {
@@ -20,13 +18,16 @@ public class ExecutionUtil {
     }
 
     public static void checkInit() {
-
+        if (scheduler == null) {
+            throw new IllegalStateException("Scheduler not initialized");
+        }
     }
 
 
-    public static <T> CompletableFuture<T> supplyAsync(JavaPlugin plugin, Supplier<T> supplier) {
+    public static <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier) {
+        checkInit();
         CompletableFuture<T> future = new CompletableFuture<>();
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        scheduler.runTaskAsynchronously(() -> {
             try {
                 future.complete(supplier.get());
             } catch (Exception e) {
@@ -37,9 +38,15 @@ public class ExecutionUtil {
         return future;
     }
 
-    public static CompletableFuture<Void> runAsync(JavaPlugin plugin, Runnable runnable) {
+    /**
+     * Runs a runnable asynchronously and returns a CompletableFuture that completes when the runnable is done.
+     *
+     * @param runnable The runnable to run
+     * @return A CompletableFuture that completes when the runnable is done
+     */
+    public static CompletableFuture<Void> runAsync(Runnable runnable) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        scheduler.runTaskAsynchronously(() -> {
             try {
                 runnable.run();
                 future.complete(null);
@@ -51,7 +58,14 @@ public class ExecutionUtil {
         return future;
     }
 
-    public static <T> T runSyncBlocking(JavaPlugin plugin, Callable<T> callable) {
+    /**
+     * During an async operation, this method will run the callable on the main thread and return the result.
+     *
+     * @param callable The callable to run
+     * @param <T>      The return type of the callable
+     * @return The result of the callable
+     */
+    public static <T> T runSyncBlocking(Callable<T> callable) {
         if (Bukkit.isPrimaryThread()) {
             try {
                 return callable.call();
@@ -61,7 +75,7 @@ public class ExecutionUtil {
 
         }
         CompletableFuture<T> future = new CompletableFuture<>();
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        scheduler.runTask(() -> {
             try {
                 callable.call();
                 future.complete(null);
