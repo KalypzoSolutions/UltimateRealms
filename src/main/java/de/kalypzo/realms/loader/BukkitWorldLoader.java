@@ -1,13 +1,13 @@
 package de.kalypzo.realms.loader;
 
+import com.google.common.base.Preconditions;
 import de.kalypzo.realms.RealmPlugin;
-import de.kalypzo.realms.generator.GenerationSettings;
-import de.kalypzo.realms.generator.RealmGenerator;
 import de.kalypzo.realms.world.*;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -35,10 +36,6 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @Override
-    public WorldHandle createWorld(RealmGenerator generator, GenerationSettings settings) {
-        return generator.generateRealm(this, settings);
-    }
 
     public void processUnloadingQueue() { //TODO: not used
         while (!unloadingQueue.isEmpty()) {
@@ -65,17 +62,39 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
         observerFactoryList.remove(factory);
     }
 
+    public @Nullable WorldHandle getWorldHandle(@NotNull String worldName) {
+        return loadedWorlds.stream().filter(worldHandle -> worldHandle.getWorldName().equals(worldName)).findFirst().orElse(null);
+    }
+
+    public @Nullable WorldHandle loadWorld(@NotNull String worldName) {
+        Preconditions.checkNotNull(worldName, "worldName must not be null");
+        return loadWorld(worldName, getDefaultWorldCreator());
+    }
+
     /**
      * Expects the world to be in the world container of the server.
      */
-    public @Nullable WorldHandle loadWorld(@NotNull String worldName) {
+    public @Nullable WorldHandle loadWorld(@NotNull String worldName, @NotNull WorldCreator worldCreator) {
+        Preconditions.checkNotNull(worldName, "worldName must not be null");
         getLogger().info("Loading world: {}", worldName);
-        World bukkitWorld = Bukkit.getWorld(worldName);
-        if (bukkitWorld == null) {
-            getLogger().error("World {} does not exist.", worldName);
+        if (isWorldLoaded(worldName)) {
+            getLogger().debug("World {} is already loaded, returned existing handle.", worldName);
+            return getWorldHandle(worldName);
+        }
+        File worldFolder = new File(Bukkit.getWorldContainer(), worldName);
+        if (!worldFolder.exists()) {
+            getLogger().debug("World {} does not exist.", worldName);
             return null;
         }
-        BukkitWorldHandle worldHandle = new BukkitWorldHandle(bukkitWorld, this);
+        if (!worldFolder.isDirectory()) {
+            throw new IllegalStateException("World " + worldName + " is not a directory.");
+        }
+
+        World world = new WorldCreator(worldName).copy(worldCreator).createWorld();
+        if (world == null) {
+            throw new IllegalStateException("WorldCreator returned null on: " + worldName);
+        }
+        BukkitWorldHandle worldHandle = new BukkitWorldHandle(world, this);
         for (WorldObserverFactory observerFactory : observerFactoryList) {
             worldHandle.subscribe(observerFactory.createWorldObserver(worldHandle));
         }
@@ -139,5 +158,8 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
         return LOGGER;
     }
 
+    public WorldCreator getDefaultWorldCreator() {
+        return new WorldCreator("world");
+    }
 
 }
