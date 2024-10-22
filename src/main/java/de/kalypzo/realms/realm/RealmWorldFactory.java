@@ -15,10 +15,10 @@ public class RealmWorldFactory {
         this.playerContainerFactory = playerContainerFactory;
     }
 
-    public RealmWorld createRealmWorld(UUID ownerUuid, RealmCreationContext context) {
+    public RealmWorld createRealmWorld(RealmCreationContext context) {
         return new RealmWorldImpl(
                 UUID.randomUUID(),
-                ownerUuid,
+                context.getRealmOwner().getUuid(),
                 new FlagContainer(),
                 playerContainerFactory.createPlayerContainer(),
                 playerContainerFactory.createPlayerContainer(),

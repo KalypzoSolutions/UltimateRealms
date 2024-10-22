@@ -1,17 +1,15 @@
 package de.kalypzo.realms.storage.mongo;
 
 import de.kalypzo.realms.config.MongoConfiguration;
-import de.kalypzo.realms.player.PlayerContainerImpl;
+import de.kalypzo.realms.player.RealmPlayer;
 import de.kalypzo.realms.realm.PlayerContainerFactory;
+import de.kalypzo.realms.realm.RealmCreationContext;
 import de.kalypzo.realms.realm.RealmWorldFactory;
-import de.kalypzo.realms.realm.RealmWorldImpl;
-import de.kalypzo.realms.realm.flag.FlagContainer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -69,7 +67,7 @@ public class MongoDataStorageTest {
             public String getCollectionPrefix() {
                 return "ultimate_realms_";
             }
-        }, new RealmWorldFactory(new PlayerContainerFactory(null)));
+        }, new RealmWorldFactory(new PlayerContainerFactory()));
         mongoRealmDataStorage.init();
     }
 
@@ -77,7 +75,7 @@ public class MongoDataStorageTest {
     @Test
     @Order(1)
     public void testRealmSave() {
-        var world = new RealmWorldImpl(realmId, ownerUuid, new FlagContainer(), new PlayerContainerImpl(List.of(), null), new PlayerContainerImpl(List.of(), null));
+        var world = mongoRealmDataStorage.getRealmWorldFactory().createRealmWorld(new RealmCreationContext(RealmPlayer.SERVER));
         mongoRealmDataStorage.saveRealm(world);
     }
 
