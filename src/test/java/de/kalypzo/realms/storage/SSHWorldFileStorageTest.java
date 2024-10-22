@@ -8,6 +8,7 @@ import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@EnabledIfEnvironmentVariable(named = "SSH_TESTS", matches = "true", disabledReason = "SSH tests are disabled")
+@EnabledIfEnvironmentVariable(named = "SSH_TESTS", matches = "true", disabledReason = "SSH tests are disabled")
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SSHWorldFileStorageTest {
