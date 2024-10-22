@@ -7,6 +7,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.FileAttributes;
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.xfer.FileSystemFile;
 import net.schmizz.sshj.xfer.TransferListener;
@@ -22,10 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedList;
+import java.util.List;
 
 @Getter
-public class SSHRealmWorldFileStorage implements RealmWorldFileStorage {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SSHRealmWorldFileStorage.class);
+public class SSHWorldFileStorage implements WorldFileStorage {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SSHWorldFileStorage.class);
     private final SSHClient sshClient;
     private final WorldFileStorageConfiguration worldFileStorageConfiguration;
     private final FolderBundler folderBundler;
@@ -33,15 +36,34 @@ public class SSHRealmWorldFileStorage implements RealmWorldFileStorage {
     @Setter
     private @Nullable TransferListener sshTransferListener;
 
-    public SSHRealmWorldFileStorage(SSHClient sshClient,
-                                    WorldFileStorageConfiguration worldFileStorageConfiguration,
-                                    FolderBundler folderBundler, Path tempFolder) {
+    public SSHWorldFileStorage(SSHClient sshClient,
+                               WorldFileStorageConfiguration worldFileStorageConfiguration,
+                               FolderBundler folderBundler, Path tempFolder) {
         this.sshClient = sshClient;
         this.worldFileStorageConfiguration = worldFileStorageConfiguration;
         this.folderBundler = folderBundler;
         this.tempFolder = tempFolder;
         checkConnection();
         checkRemoteFolderStructure();
+    }
+
+    /**
+     * @return files names only (no directories) in the remote folder
+     */
+    @Override
+    public List<String> getFiles() {
+        List<String> files = new LinkedList<>();
+        try (SFTPClient sftpClient = sshClient.newSFTPClient()) {
+            List<RemoteResourceInfo> infoList = sftpClient.ls(worldFileStorageConfiguration.getRemoteFolder());
+            for (RemoteResourceInfo info : infoList) {
+                if (info.isRegularFile()) {
+                    files.add(info.getName());
+                }
+            }
+        } catch (IOException e) {
+            throw new WorldStorageException("Could not discover files", e); //TODO
+        }
+        return files;
     }
 
     @Override

@@ -5,6 +5,7 @@ import de.kalypzo.realms.player.RealmPlayer;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public interface RealmWorldManager {
 
@@ -12,7 +13,7 @@ public interface RealmWorldManager {
 
     void deleteRealm(RealmWorld realmWorld);
 
-    ActiveRealmWorld createRealm(RealmCreationContext context);
+    CompletableFuture<ActiveRealmWorld> createRealm(RealmCreationContext context);
 
     List<RealmWorld> getRealmsByOwner(UUID owner);
 

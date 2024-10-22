@@ -4,8 +4,7 @@ import de.kalypzo.realms.realm.ActiveRealmManager;
 import de.kalypzo.realms.realm.ActiveRealmWorld;
 import de.kalypzo.realms.realm.ActiveRealmWorldImpl;
 import de.kalypzo.realms.realm.RealmWorld;
-import de.kalypzo.realms.realm.process.impl.UniversalProcessExecutor;
-import de.kalypzo.realms.storage.RealmWorldFileStorage;
+import de.kalypzo.realms.storage.WorldFileStorage;
 import de.kalypzo.realms.world.WorldHandle;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -17,16 +16,13 @@ public class RealmLoaderImpl implements RealmLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(RealmLoaderImpl.class);
     private final ActiveRealmManager activeRealmManager;
     private final WorldLoader worldLoader;
-    private final RealmWorldFileStorage realmWorldFileStorage;
-    private final UniversalProcessExecutor processExecutor;
+    private final WorldFileStorage worldFileStorage;
 
     public RealmLoaderImpl(ActiveRealmManager realmStateManager, WorldLoader worldLoader,
-                           RealmWorldFileStorage realmWorldFileStorage,
-                           UniversalProcessExecutor processExecutor) {
+                           WorldFileStorage worldFileStorage) {
         this.activeRealmManager = realmStateManager;
         this.worldLoader = worldLoader;
-        this.realmWorldFileStorage = realmWorldFileStorage;
-        this.processExecutor = processExecutor;
+        this.worldFileStorage = worldFileStorage;
     }
 
 
@@ -36,16 +32,26 @@ public class RealmLoaderImpl implements RealmLoader {
         if (worldLoader.isWorldLoaded(realmId)) {
             return null;
         }
-        if (!realmWorldFileStorage.isFileExisting(realmId)) {
+        if (!worldFileStorage.isFileExisting(realmId)) {
             return null;
         }
 
-        realmWorldFileStorage.loadFile(realmId, Bukkit.getWorldContainer().toPath().resolve(realmId));
+        worldFileStorage.loadFile(realmId, Bukkit.getWorldContainer().toPath().resolve(realmId));
         WorldHandle worldHandle = worldLoader.loadWorld(realmId);
+        return loadRealm(realmWorld, worldHandle);
+    }
+
+    @Override
+    public ActiveRealmWorld loadRealm(RealmWorld realmWorld, WorldHandle worldHandle) {
         var activeRealm = new ActiveRealmWorldImpl(realmWorld, activeRealmManager, this, worldHandle);
         LOGGER.info("Loaded realm {}", realmWorld.getRealmId());
         activeRealmManager.register(activeRealm);
         return activeRealm;
+    }
+
+    @Override
+    public boolean isRealmLoaded(RealmWorld realmWorld) {
+        return false;
     }
 
     @Override
@@ -55,7 +61,7 @@ public class RealmLoaderImpl implements RealmLoader {
         }
         activeRealmManager.unregister(realm);
         realm.getWorldHandle().unload();
-        realmWorldFileStorage.saveFile(Bukkit.getWorldContainer().toPath().resolve(realm.getRealmId().toString()));
+        worldFileStorage.saveFile(Bukkit.getWorldContainer().toPath().resolve(realm.getRealmId().toString()));
         LOGGER.info("Unloaded realm {}", realm.getRealmId());
     }
 }

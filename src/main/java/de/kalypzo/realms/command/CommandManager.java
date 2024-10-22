@@ -1,8 +1,11 @@
 package de.kalypzo.realms.command;
 
 import de.kalypzo.realms.RealmPlugin;
-import de.kalypzo.realms.command.realm.CreateRealmCmd;
-import de.kalypzo.realms.command.realm.HelpCmd;
+import de.kalypzo.realms.command.parser.RealmPlayerParser;
+import de.kalypzo.realms.command.realm.RealmCreateCmd;
+import de.kalypzo.realms.command.templates.RealmTemplateListCmd;
+import de.kalypzo.realms.player.RealmPlayer;
+import io.leangen.geantyref.TypeToken;
 import lombok.Getter;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.AnnotationParser;
@@ -42,6 +45,8 @@ public class CommandManager {
 
     protected void registerParser() {
         ParserRegistry<CommandSender> parserRegistry = commandManager.parserRegistry();
+        parserRegistry.registerParserSupplier(TypeToken.get(RealmPlayer.class), (parameters) -> new RealmPlayerParser<>());
+
     }
 
     protected void registerExceptionController() {
@@ -51,8 +56,8 @@ public class CommandManager {
     protected void registerCommands() {
         AnnotationParser<CommandSender> annotationParser = new AnnotationParser<>(commandManager, CommandSender.class);
         annotationParser.parse(
-                new CreateRealmCmd(this),
-                //new DebugCmd(this)
+                new RealmCreateCmd(this),
+                new RealmTemplateListCmd(),
                 new HelpCmd(this)
         );
     }

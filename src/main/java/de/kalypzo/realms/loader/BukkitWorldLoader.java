@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import de.kalypzo.realms.RealmPlugin;
 import de.kalypzo.realms.world.*;
 import lombok.Getter;
+import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -31,8 +32,12 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
     private final List<WorldHandle> loadedWorlds = new ArrayList<>();
     private final Set<String> unloadingBlacklist = new HashSet<>();
     private final Queue<World> unloadingQueue = new LinkedList<>();
+    private final BukkitWorldCreatorProvider worldCreatorProvider;
 
-    public BukkitWorldLoader(RealmPlugin plugin) {
+
+    public BukkitWorldLoader(@NotNull @NonNull RealmPlugin plugin,
+                             @NotNull @NonNull BukkitWorldCreatorProvider worldCreatorProvider) {
+        this.worldCreatorProvider = worldCreatorProvider;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -68,7 +73,7 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
 
     public @Nullable WorldHandle loadWorld(@NotNull String worldName) {
         Preconditions.checkNotNull(worldName, "worldName must not be null");
-        return loadWorld(worldName, getDefaultWorldCreator());
+        return loadWorld(worldName, worldCreatorProvider.getWorldCreator(worldName));
     }
 
     /**
@@ -158,8 +163,5 @@ public class BukkitWorldLoader implements WorldLoader, Listener {
         return LOGGER;
     }
 
-    public WorldCreator getDefaultWorldCreator() {
-        return new WorldCreator("world");
-    }
 
 }

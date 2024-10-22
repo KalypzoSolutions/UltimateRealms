@@ -28,13 +28,17 @@ public class CachedRealmPlayerImpl extends RealmPlayerImpl {
     @Override
     public void removeOwningRealm(RealmWorld realm) {
         super.removeOwningRealm(realm);
-        cachedOwningRealms.remove(realm);
+        if (cachedOwningRealms != null) {
+            cachedOwningRealms.remove(realm);
+        }
     }
 
     @Override
     public void addOwningRealm(RealmWorld realm) {
         super.addOwningRealm(realm);
-        cachedOwningRealms.add(realm);
+        if (cachedOwningRealms != null) {
+            cachedOwningRealms.add(realm);
+        }
     }
 
     public void invalidateCache() {

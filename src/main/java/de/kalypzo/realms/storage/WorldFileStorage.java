@@ -5,19 +5,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
+import java.util.List;
 
 /**
- * Represents a storage for realm-worlds
+ * Represents a storage for realm-worlds and templates
  */
-public interface RealmWorldFileStorage {
+public interface WorldFileStorage {
 
 
     /**
-     * @param remoteFileName the name of the file to load the world from
+     * @return a list of all files in the storage
+     */
+    List<String> getFiles();
+
+
+    /**
+     * @param remoteFileNameWithoutExtension the name of the file to load the world from
      * @return path to the worlds-container-folder
      * @throws WorldStorageException if the file could not be loaded
      */
-    Path loadFile(@NotNull @NonNull String remoteFileName, @NotNull @NonNull Path destinationFolder);
+    Path loadFile(@NotNull @NonNull String remoteFileNameWithoutExtension, @NotNull @NonNull Path destinationFolder);
 
     /**
      * @param worldPath world path to save

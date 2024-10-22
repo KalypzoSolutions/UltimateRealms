@@ -20,7 +20,7 @@ public abstract class RealmCommand {
      * @return a completable future that completes when the runnable is done
      */
     public CompletableFuture<Void> runAsync(Runnable runnable) {
-        return ExecutionUtil.runAsync(getCommandManager().getPlugin(), runnable);
+        return ExecutionUtil.runAsync(runnable);
     }
 
     public RealmAPI getRealmApi() {

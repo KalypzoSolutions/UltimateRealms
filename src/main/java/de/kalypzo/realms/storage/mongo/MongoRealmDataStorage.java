@@ -10,12 +10,12 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import de.kalypzo.realms.config.MongoConfiguration;
 import de.kalypzo.realms.player.PlayerContainer;
-import de.kalypzo.realms.player.PlayerContainerImpl;
-import de.kalypzo.realms.player.RealmPlayerManager;
+import de.kalypzo.realms.realm.RealmCreationContext;
 import de.kalypzo.realms.realm.RealmWorld;
-import de.kalypzo.realms.realm.RealmWorldImpl;
+import de.kalypzo.realms.realm.RealmWorldFactory;
 import de.kalypzo.realms.realm.flag.FlagContainer;
 import de.kalypzo.realms.storage.RealmDataStorage;
+import lombok.Getter;
 import lombok.NonNull;
 import org.bson.Document;
 import org.bson.UuidRepresentation;
@@ -23,13 +23,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+@Getter
 public class MongoRealmDataStorage implements RealmDataStorage {
     private final MongoConfiguration configuration;
+    private final RealmWorldFactory realmWorldFactory;
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    public MongoRealmDataStorage(@NotNull @NonNull MongoConfiguration configuration) {
+    public MongoRealmDataStorage(@NotNull @NonNull MongoConfiguration configuration, RealmWorldFactory realmWorldFactory) {
         this.configuration = configuration;
+        this.realmWorldFactory = realmWorldFactory;
     }
 
     @Override
@@ -92,6 +95,10 @@ public class MongoRealmDataStorage implements RealmDataStorage {
         return realms;
     }
 
+    public RealmCreationContext loadContext(UUID realmId) {
+        throw new UnsupportedOperationException("Not implemented yet"); //TODO
+    }
+
     @Override
     public List<RealmWorld> loadRealmsByOwner(UUID ownerId) {
         var collection = database.getCollection(getCollectionPrefix() + "worlds");
@@ -106,14 +113,11 @@ public class MongoRealmDataStorage implements RealmDataStorage {
     public RealmWorld documentToRealmWorld(Document document) {
         UUID realmId = document.get("_id", UUID.class);
         UUID ownerUuid = document.get("owner_uuid", UUID.class);
-        PlayerContainer trustedMembers = new PlayerContainerImpl(document.getList("trusted", UUID.class), getRealmPlayerManager());
-        PlayerContainer bannedMembers = new PlayerContainerImpl(document.getList("banned", UUID.class), getRealmPlayerManager());
-        return new RealmWorldImpl(realmId, ownerUuid, new FlagContainer(), trustedMembers, bannedMembers);
+        List<UUID> trustedMembers = (document.getList("trusted", UUID.class));
+        List<UUID> bannedMembers = (document.getList("banned", UUID.class));
+        return realmWorldFactory.createRealmWorld(realmId, ownerUuid, trustedMembers, bannedMembers, () -> loadContext(realmId));
     }
 
-    public RealmPlayerManager getRealmPlayerManager() {
-        return null;//TODO
-    }
 
     public Document realmWorldToDocument(RealmWorld realmWorld) {
         return new Document()

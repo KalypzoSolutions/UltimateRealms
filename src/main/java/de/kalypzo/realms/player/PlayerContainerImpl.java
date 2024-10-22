@@ -1,5 +1,7 @@
 package de.kalypzo.realms.player;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,9 +9,13 @@ import java.util.UUID;
 
 public class PlayerContainerImpl implements PlayerContainer {
     private final Set<UUID> playerUuids = new HashSet<>();
-    private final RealmPlayerManager realmPlayerManager;
+    private final @NotNull RealmPlayerManager realmPlayerManager;
 
-    public PlayerContainerImpl(Collection<UUID> playerUuids, RealmPlayerManager realmPlayerManager) {
+    public PlayerContainerImpl(@NotNull RealmPlayerManager realmPlayerManager) {
+        this.realmPlayerManager = realmPlayerManager;
+    }
+
+    public PlayerContainerImpl(Collection<UUID> playerUuids, @NotNull RealmPlayerManager realmPlayerManager) {
         this.playerUuids.addAll(playerUuids);
         this.realmPlayerManager = realmPlayerManager;
     }

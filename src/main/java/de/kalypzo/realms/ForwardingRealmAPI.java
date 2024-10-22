@@ -3,6 +3,7 @@ package de.kalypzo.realms;
 import de.kalypzo.realms.exception.ForwardingModeDoesNotSupportThisMethodException;
 import de.kalypzo.realms.loader.RealmLoader;
 import de.kalypzo.realms.loader.WorldLoader;
+import de.kalypzo.realms.player.RealmPlayerManager;
 import de.kalypzo.realms.realm.RealmWorldManager;
 import de.kalypzo.realms.scheduling.RealmScheduler;
 import lombok.Getter;
@@ -32,6 +33,11 @@ public class ForwardingRealmAPI implements RealmAPI {
 
     public RealmLoader getRealmLoader() {
         throw new ForwardingModeDoesNotSupportThisMethodException();
+    }
+
+    @Override
+    public RealmPlayerManager getRealmPlayerManager() {
+        return null;
     }
 
     public void load() {

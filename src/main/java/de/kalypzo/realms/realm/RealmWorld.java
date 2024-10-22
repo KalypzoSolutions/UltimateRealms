@@ -5,6 +5,7 @@ import de.kalypzo.realms.player.RealmPlayer;
 import de.kalypzo.realms.realm.flag.FlagContainer;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Represents a realm-world. It is not bound to a specific host.
@@ -32,7 +33,7 @@ public interface RealmWorld {
     PlayerContainer getTrustedMembers();
 
     /**
-     * @return banned members of this world.
+     * @return banned members of this world, which are not allowed to join the world.
      */
     PlayerContainer getBannedMembers();
 
@@ -53,4 +54,8 @@ public interface RealmWorld {
 
     void setOwnerUuid(UUID ownerUuid);
 
+    /**
+     * @return the realm creation context of this world.
+     */
+    CompletableFuture<RealmCreationContext> getRealmCreationContextAsync();
 }

@@ -2,6 +2,8 @@ package de.kalypzo.realms.storage.mongo;
 
 import de.kalypzo.realms.config.MongoConfiguration;
 import de.kalypzo.realms.player.PlayerContainerImpl;
+import de.kalypzo.realms.realm.PlayerContainerFactory;
+import de.kalypzo.realms.realm.RealmWorldFactory;
 import de.kalypzo.realms.realm.RealmWorldImpl;
 import de.kalypzo.realms.realm.flag.FlagContainer;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +69,7 @@ public class MongoDataStorageTest {
             public String getCollectionPrefix() {
                 return "ultimate_realms_";
             }
-        });
+        }, new RealmWorldFactory(new PlayerContainerFactory(null)));
         mongoRealmDataStorage.init();
     }
 

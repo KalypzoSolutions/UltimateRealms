@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Getter
 public class ActiveRealmWorldImpl implements ActiveRealmWorld {
@@ -41,6 +42,7 @@ public class ActiveRealmWorldImpl implements ActiveRealmWorld {
     public long getUptimeMillis() {
         return System.currentTimeMillis() - loadedTimestamp;
     }
+
 
     @Override
     public boolean isIdle() {
@@ -95,6 +97,11 @@ public class ActiveRealmWorldImpl implements ActiveRealmWorld {
     @Override
     public void setOwnerUuid(UUID ownerUuid) {
         parent.setOwnerUuid(ownerUuid);
+    }
+
+    @Override
+    public CompletableFuture<RealmCreationContext> getRealmCreationContextAsync() {
+        return parent.getRealmCreationContextAsync();
     }
 
     @Override

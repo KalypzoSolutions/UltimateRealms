@@ -2,6 +2,7 @@ package de.kalypzo.realms.storage;
 
 import de.kalypzo.realms.config.WorldFileStorageConfiguration;
 import de.kalypzo.realms.storage.bundler.ZipBundler;
+import lombok.extern.slf4j.Slf4j;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -18,15 +19,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 //@EnabledIfEnvironmentVariable(named = "SSH_TESTS", matches = "true", disabledReason = "SSH tests are disabled")
+@Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SSHRealmWorldFileStorageTest {
+class SSHWorldFileStorageTest {
 
     @TempDir
     Path tempDir;
 
     private SSHClient sshClient;
     private WorldFileStorageConfiguration config;
-    private SSHRealmWorldFileStorage storage;
+    private SSHWorldFileStorage storage;
 
     private static final String TEST_HOST = "127.0.0.1";
     private static final int TEST_PORT = 22;
@@ -37,7 +39,7 @@ class SSHRealmWorldFileStorageTest {
     void setUp() throws IOException {
         sshClient = createSSHClient();
         config = createTestConfig();
-        storage = new SSHRealmWorldFileStorage(sshClient, config, new ZipBundler(tempDir), tempDir);
+        storage = new SSHWorldFileStorage(sshClient, config, new ZipBundler(tempDir), tempDir);
     }
 
     @AfterEach
@@ -57,6 +59,22 @@ class SSHRealmWorldFileStorageTest {
         }
     }
 
+
+    @Test
+    void testSaveNonExistent() {
+        Path nonExistent = Path.of("nonExistent");
+        assertThrows(WorldStorageException.class, () -> storage.saveFile(nonExistent));
+    }
+
+    @Test
+    @Order(2)
+    void testGetFiles() {
+        List<String> files = storage.getFiles();
+        for (String file : files) {
+            log.info("File: {}", file);
+        }
+        assertTrue(files.contains(".idea" + storage.getFolderBundler().getFileNameExtension()), "Files should contain .idea");
+    }
 
     @Test
     void testLoadNonExistent() {

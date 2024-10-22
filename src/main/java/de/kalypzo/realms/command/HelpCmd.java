@@ -1,7 +1,5 @@
-package de.kalypzo.realms.command.realm;
+package de.kalypzo.realms.command;
 
-import de.kalypzo.realms.command.CommandManager;
-import de.kalypzo.realms.command.RealmCommand;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
