@@ -30,12 +30,13 @@ public class CommandManager {
             getLogger().info("Brigadier support enabled.");
         } else {
             getLogger().warn("Brigadier is not supported on this server version.");
+            if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+                commandManager.registerAsynchronousCompletions();
+                getLogger().info("Asynchronous tab completions enabled.");
+            }
         }
 
-        if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
-            commandManager.registerAsynchronousCompletions();
-            getLogger().info("Asynchronous tab completions enabled.");
-        }
+
         //commandManager.captionRegistry().registerProvider(new RealmCaptionProvider());
         registerParser();
         registerExceptionController();
