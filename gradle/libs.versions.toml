@@ -1,6 +1,6 @@
 [versions]
 cloud = "2.0.0-SNAPSHOT"
-cloud-paper = "2.0.0-beta.10"
+cloud-paper = "2.0.0-SNAPSHOT"
 cloud-annotations = "2.0.0"
 obliviate-invs = "4.3.0"
 paper = "1.21.1-R0.1-SNAPSHOT"
