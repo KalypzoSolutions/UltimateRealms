@@ -14,7 +14,7 @@ slf4j = "2.0.16"
 logback = "1.5.12"
 jedis-mock = "1.1.6"
 configurate = "4.1.2"
-apache-commons = "2.17.0"
+apache-commons = "2.18.0"
 
 [libraries]
 
